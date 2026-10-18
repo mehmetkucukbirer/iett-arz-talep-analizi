@@ -1,0 +1,386 @@
+<title>Sütun Sütun Veri Kontrolleri</title>
+<style>
+  :root{
+    --ground:#F6F7F8; --surface:#FFFFFF; --surface-2:#FBFCFC;
+    --ink:#16191C; --ink-2:#525E69; --ink-3:#7B8792;
+    --line:#DEE3E7; --line-2:#EDF0F2;
+    --accent:#C1121F; --accent-soft:#FBE9EA;
+    --ok:#15703F; --ok-soft:#E7F4EC;
+    --warn:#9A5200; --warn-soft:#FBF0E2;
+    --stop:#8A1A1A; --stop-soft:#FBE9EA;
+    --arz:#1B5E8A; --arz-soft:#E6F0F7;
+    --talep:#8A5A00; --talep-soft:#FBF2E2;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+      --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+      --line:#272D33; --line-2:#1F252A;
+      --accent:#F4626B; --accent-soft:#2B1418;
+      --ok:#59CE92; --ok-soft:#12251B;
+      --warn:#E2A65C; --warn-soft:#251B0F;
+      --stop:#FF8A8A; --stop-soft:#2B1418;
+      --arz:#6FB6E0; --arz-soft:#12222C;
+      --talep:#E0AC5E; --talep-soft:#251C0F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+    --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+    --line:#272D33; --line-2:#1F252A;
+    --accent:#F4626B; --accent-soft:#2B1418;
+    --ok:#59CE92; --ok-soft:#12251B;
+    --warn:#E2A65C; --warn-soft:#251B0F;
+    --stop:#FF8A8A; --stop-soft:#2B1418;
+    --arz:#6FB6E0; --arz-soft:#12222C;
+    --talep:#E0AC5E; --talep-soft:#251C0F;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--ground); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 22px 96px}
+
+  header{border-bottom:1px solid var(--line); margin-bottom:36px; padding:54px 0 26px}
+  .eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent); font-weight:600}
+  h1{font-size:clamp(28px,4.4vw,42px); line-height:1.1; letter-spacing:-.022em;
+    font-weight:680; margin:14px 0 12px; text-wrap:balance}
+  .lede{font-size:17.5px; color:var(--ink-2); max-width:66ch; margin:0}
+
+  .anahtar{display:flex; flex-wrap:wrap; gap:10px 20px; margin:22px 0 0;
+    padding:16px 18px; background:var(--surface); border:1px solid var(--line); border-radius:10px}
+  .anahtar div{font-size:14px; white-space:nowrap}
+
+  h2{font-size:21px; letter-spacing:-.015em; font-weight:660; margin:0 0 3px; text-wrap:balance}
+  section{border-top:1px solid var(--line); padding-top:30px; margin-top:36px}
+  .kaynak{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-3); margin:0 0 16px}
+  p{margin:0 0 12px}
+  b,strong{font-weight:640}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:var(--line-2);
+    border:1px solid var(--line); padding:1px 5px; border-radius:4px}
+
+  .kaydir{overflow-x:auto; margin:0 0 14px; border:1px solid var(--line);
+    border-radius:9px; background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:13.5px}
+  th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line-2); vertical-align:top}
+  thead th{font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-3); font-weight:600;
+    background:var(--surface-2); border-bottom:1px solid var(--line); white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.s{font-family:ui-monospace,Menlo,monospace; font-size:12.5px; white-space:nowrap; font-weight:600}
+  td.d{text-align:center; white-space:nowrap; font-size:15px}
+  tr.kullanildi td.s{color:var(--ok)}
+  tr.sorunlu  td.s{color:var(--stop)}
+
+  .rz{display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:10px;
+    letter-spacing:.06em; padding:2px 7px; border-radius:4px; font-weight:640; white-space:nowrap}
+  .rz-a{background:var(--arz-soft); color:var(--arz)}
+  .rz-t{background:var(--talep-soft); color:var(--talep)}
+
+  .kutu{border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 9px 9px 0; padding:15px 17px; margin:2px 0 16px}
+  .kutu p:last-child{margin-bottom:0}
+  .kutu .et{font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--accent); font-weight:640; display:block; margin-bottom:7px}
+
+  @media (max-width:640px){ .wrap{padding:0 14px 72px} table{font-size:12.5px} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Veri Kalitesi · 17 Ağustos 2026</div>
+  <h1>Her veri setinin her sütunu, tek tek kontrol edildi</h1>
+  <p class="lede">Yedi kaynak, 62 sütun. Her satırda: sütun ne taşıyor, üzerinde ne
+  kontrol ettik, sonuç ne çıktı, analizde kullanıldı mı.</p>
+
+  <div class="anahtar">
+    <div>✅ <b>Kontrol edildi, sağlam</b> — kullanıldı</div>
+    <div>⚠️ <b>Kontrol edildi, sorun bulundu</b> — düzeltildi</div>
+    <div>❌ <b>Kontrol edildi, kullanılamaz</b> — terk edildi</div>
+    <div>➖ <b>Kontrol gerekmedi</b> — analizde işimize yaramadı</div>
+  </div>
+</header>
+
+<!-- ================= TALEP ================= -->
+<section style="border-top:none; padding-top:0; margin-top:0">
+  <h2>1 · Saatlik yolculuk verisi <span class="rz rz-t">TALEP</span></h2>
+  <p class="kaynak">hourly_transportation_202410.csv · 2.770.720 satır · 13 sütun</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Sütun</th><th>Ne taşıyor</th><th></th><th>Ne kontrol ettik → sonuç</th><th>Kullanıldı mı</th></tr></thead>
+    <tbody>
+      <tr class="sorunlu"><td class="s">transition_date</td><td>Tarih</td><td class="d">⚠️</td>
+        <td><b>Tarih kapsamı sayıldı.</b> 31 gün beklerken <b>18 tarih</b> çıktı, o 18'in de sadece 5'inde gerçek veri (diğerlerinde 1.400–3.200 satır = gürültü). Günlük ortalama böleni 23 değil <b>5</b> oldu — önceki hesap 4,6 kat hatalıydı.</td>
+        <td><b>Evet</b> — süzgeç</td></tr>
+
+      <tr class="kullanildi"><td class="s">transition_hour</td><td>Saat (0–23)</td><td class="d">✅</td>
+        <td>Aralık kontrol edildi, boş değer yok. <b>Dakika yok</b> — en ince zaman birimi bu.</td>
+        <td><b>Evet</b> — anahtar</td></tr>
+
+      <tr><td class="s">transport_type_id</td><td>Ulaşım tipi kodu</td><td class="d">➖</td>
+        <td>Tek değer (1) — ayırt edici değil.</td><td>Hayır</td></tr>
+
+      <tr class="kullanildi"><td class="s">road_type</td><td>OTOYOL / RAYLI / DENİZ</td><td class="d">✅</td>
+        <td>Dağılım sayıldı: OTOYOL %66,3 · RAYLI %29,8 · DENİZ %3,9. Süzmezsek metro yolcusunu otobüs hattına yazardık.</td>
+        <td><b>Evet</b> — süzgeç</td></tr>
+
+      <tr class="sorunlu"><td class="s">line</td><td>Hattın iki uç noktası</td><td class="d">❌</td>
+        <td><b>Gizli yön taşıyor mu diye test edildi</b> (Mart 2023 dosyası). Her hat için tek sabit değer çıktı — 34 → hep “AVCILAR-ZINCIRLIKUYU”. Yön hipotezi çürüdü.</td>
+        <td>Hayır</td></tr>
+
+      <tr><td class="s">transfer_type</td><td>Normal / Aktarma</td><td class="d">✅</td>
+        <td>İki değer doğrulandı. Aktarma sorununun <code>number_of_passage</code>'da olduğu buradan anlaşıldı.</td>
+        <td>Dolaylı</td></tr>
+
+      <tr class="sorunlu"><td class="s">number_of_passage</td><td>Geçiş sayısı</td><td class="d">❌</td>
+        <td><b>Aktarmayı iki kez sayıyor.</b> Kullanılsa talep şişerdi.</td><td>Hayır</td></tr>
+
+      <tr class="kullanildi"><td class="s">number_of_passenger</td><td>Yolcu sayısı</td><td class="d">✅</td>
+        <td>Geçersiz/negatif değer taraması yapıldı: <b>0 bozuk kayıt</b>. Toplam günlük 4.112.738 yolcu — gerçekçi.</td>
+        <td><b>Evet</b> — ölçü</td></tr>
+
+      <tr><td class="s">product_kind</td><td>TAM / İNDİRİMLİ…</td><td class="d">➖</td>
+        <td>9 kategori. Yolcu tipi kırılımı analizin sorusunda yok.</td><td>Hayır</td></tr>
+
+      <tr><td class="s">transaction_type_desc</td><td>İşlem türü</td><td class="d">➖</td>
+        <td>11 kategori, <code>product_kind</code> ile örtüşüyor.</td><td>Hayır</td></tr>
+
+      <tr class="sorunlu"><td class="s">town</td><td>İlçe</td><td class="d">❌</td>
+        <td><b>Güvenilirlik testi yapıldı:</b> 15B (Üsküdar hattı) için “BAKIRKOY” yazıyor. Coğrafi analizde kullanılamaz.</td>
+        <td>Hayır</td></tr>
+
+      <tr class="kullanildi"><td class="s">line_name</td><td><b>Hat kodu</b></td><td class="d">⚠️</td>
+        <td><b>İsimlendirme ters:</b> hat kodu <code>line</code>'da değil burada. 774 farklı kod. Arz tarafıyla eşleşme sayıldı: 798 talep hattının <b>724'ü</b> karşılık buluyor.</td>
+        <td><b>Evet</b> — anahtar</td></tr>
+
+      <tr class="sorunlu"><td class="s">station_poi_desc_cd</td><td>İstasyon/durak</td><td class="d">❌</td>
+        <td><b>Doluluk oranı ölçüldü: %7,4.</b> Dolu olduğu satırların hepsi Metrobüs (34, 34A) — istasyonlu sistem olduğu için. Otobüste durak bilgisi yok.</td>
+        <td>Hayır</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="kutu">
+    <span class="et">Bu tablonun söylediği</span>
+    <p>13 sütunun <b>hiçbirinde</b> yön, araç, sefer ya da dakika bilgisi yok. Projenin
+    “yön bazlı analiz yapılamaz” kısıtı bir tercih değil, bu tablonun doğrudan sonucu.</p>
+  </div>
+</section>
+
+<!-- ================= ARZ: PLANLANAN ================= -->
+<section>
+  <h2>2 · Planlanan sefer saatleri <span class="rz rz-a">ARZ</span></h2>
+  <p class="kaynak">GetPlanlananSeferSaati_json · 130.435 kalkış · 8 sütun</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Sütun</th><th>Ne taşıyor</th><th></th><th>Ne kontrol ettik → sonuç</th><th>Kullanıldı mı</th></tr></thead>
+    <tbody>
+      <tr class="kullanildi"><td class="s">SHATKODU</td><td>Hat kodu</td><td class="d">✅</td>
+        <td>783 hat sorgulandı, <b>775'i</b> veri döndürdü, 0 hata.</td><td><b>Evet</b> — anahtar</td></tr>
+
+      <tr><td class="s">HATADI</td><td>Hat adı</td><td class="d">➖</td>
+        <td>Gösterim amaçlı. Türkçe karakterler düzgün (GTFS'teki bozukluk API'de yok).</td><td>Ekranda</td></tr>
+
+      <tr class="sorunlu"><td class="s">SGUZERAH</td><td>Güzergâh kodu<br><code>500T_D_D0</code></td><td class="d">⚠️</td>
+        <td><b>Doluluk oranı ölçüldü: %100</b>, hepsinden G/D harfi çıkıyor. Ama harfin <b>103 hatta gerçeği yansıtmadığı</b> bulundu — o hatlarda bir kalkış turun tamamı.</td>
+        <td><b>Evet</b> — <code>bacak</code> düzeltmesi</td></tr>
+
+      <tr class="sorunlu"><td class="s">SYON</td><td>Yön (G/D)</td><td class="d">⚠️</td>
+        <td><b>Denge analizi yapıldı.</b> 775 hattın dağılımı: 519 dengeli · 103 çok dengesiz (%15 altı) · 104 tek yönlü. Dengesizler için üç kanıtla “kalkış = tur” sonucuna varıldı.</td>
+        <td><b>Evet</b> — sınıflandırma</td></tr>
+
+      <tr class="kullanildi"><td class="s">SGUNTIPI</td><td>I / C / P</td><td class="d">✅</td>
+        <td>Dağılım sayıldı: I 50.280 · C 42.925 · P 37.230. Üçü de dolu.</td>
+        <td><b>Evet</b> — anahtar</td></tr>
+
+      <tr><td class="s">GUZERGAH_ISARETI</td><td>Güzergâh işareti</td><td class="d">➖</td>
+        <td>Çoğu satırda boş.</td><td>Hayır</td></tr>
+
+      <tr class="kullanildi"><td class="s">SSERVISTIPI</td><td>Servis tipi</td><td class="d">✅</td>
+        <td><b>Duyarlılık analizi yapıldı.</b> 4 şüpheli kategori (21.820 kalkış = %17) saatlik dağılımlarına bakılarak incelendi: <i>Gareli</i> gün boyu düz (garaj hareketi değil), <i>Ara Dinlen</i> iki keskin zirve (takviye). <b>Hepsi normal sefer sayıldı.</b></td>
+        <td><b>Evet</b> — hepsi dahil</td></tr>
+
+      <tr class="kullanildi"><td class="s">DT</td><td>Kalkış saati <code>"06:15"</code></td><td class="d">✅</td>
+        <td><b>Resmi tarifeyle karşılaştırıldı</b> (iett.istanbul, 76O hattı): dakika dakika <b>birebir tuttu</b>. 500T günlük toplam 234 kalkış, resmi sayfada 235.</td>
+        <td><b>Evet</b> — saat türetildi</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= HAT LISTESI ================= -->
+<section>
+  <h2>3 · Hat listesi <span class="rz rz-a">ARZ</span></h2>
+  <p class="kaynak">GetHat_json · 781 hat · 5 sütun</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Sütun</th><th>Ne taşıyor</th><th></th><th>Ne kontrol ettik → sonuç</th><th>Kullanıldı mı</th></tr></thead>
+    <tbody>
+      <tr class="kullanildi"><td class="s">SHATKODU</td><td>Hat kodu</td><td class="d">✅</td>
+        <td>Diğer tablolarla eşleşmesi doğrulandı.</td><td><b>Evet</b> — anahtar</td></tr>
+      <tr><td class="s">SHATADI</td><td>Hat adı</td><td class="d">➖</td><td>—</td><td>Ekranda</td></tr>
+      <tr><td class="s">TARIFE</td><td>Ücret tarifesi</td><td class="d">➖</td>
+        <td>“2 BİLETLİ” gibi. Ücret analizi kapsam dışı.</td><td>Hayır</td></tr>
+      <tr class="kullanildi"><td class="s">HAT_UZUNLUGU</td><td>Uzunluk (km)</td><td class="d">✅</td>
+        <td><b>Durak koordinatlarından haversine ile bağımsız ölçüldü.</b> Tek yön uzunluğu olduğu doğrulandı (500T: API 56,77 · G yönü 53,07 · D yönü 52,18).</td>
+        <td><b>Evet</b> — devir bandı</td></tr>
+      <tr class="sorunlu"><td class="s">SEFER_SURESI</td><td>Sefer süresi (dk)</td><td class="d">❌</td>
+        <td><b>Ölçüm mü formül mü diye test edildi.</b> Uzunlukla korelasyon <b>0,9842</b>, hatların %63,4'ü tek bir hız bandında (12–13 km/sa). Ölçülmüş olsaydı ekspres ve şehir içi hatlar ayrışırdı. <b>Planlama değeri çıktı, terk edildi.</b></td>
+        <td>Hayır — yerine arşiv</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= ARSIV ================= -->
+<section>
+  <h2>4 · Gerçekleşen sefer arşivi <span class="rz rz-a">ARZ</span></h2>
+  <p class="kaynak">GetIettArsivGorev_json · ~56.400 kayıt/gün × 5 gün · 12 sütun</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Sütun</th><th>Ne taşıyor</th><th></th><th>Ne kontrol ettik → sonuç</th><th>Kullanıldı mı</th></tr></thead>
+    <tbody>
+      <tr><td class="s">ID</td><td>Kayıt no</td><td class="d">➖</td><td>—</td><td>Hayır</td></tr>
+      <tr><td class="s">NARSIVGOREVID</td><td>Arşiv görev no</td><td class="d">➖</td><td>—</td><td>Hayır</td></tr>
+      <tr><td class="s">NGOREVID</td><td>Görev no</td><td class="d">➖</td><td>—</td><td>Hayır</td></tr>
+      <tr class="kullanildi"><td class="s">NKAYITGUNU</td><td>Gün <code>20241016</code></td><td class="d">✅</td>
+        <td>Talep verisiyle <b>aynı 5 günün</b> çekildiği doğrulandı (mevsim tuzağı: Ağustos medyanı 59,8 dk, Ekim 66,3 dk).</td>
+        <td><b>Evet</b></td></tr>
+      <tr class="kullanildi"><td class="s">SHATKODU</td><td>Hat kodu</td><td class="d">✅</td><td>—</td><td><b>Evet</b> — anahtar</td></tr>
+      <tr class="kullanildi"><td class="s">SGUZERGAHKODU</td><td>Güzergâh + yön</td><td class="d">⚠️</td>
+        <td><b>Yön dağılımı sayıldı.</b> 98'de gerçekleşen seferlerde de 43 G / 5 D — tarifedeki dengesizlik gerçekmiş, veri eksikliği değil.</td>
+        <td><b>Evet</b></td></tr>
+      <tr class="kullanildi"><td class="s">SKAPINUMARA</td><td>Araç (kapı no)</td><td class="d">✅</td>
+        <td><b>Görev dizisi analizi yapıldı.</b> Aynı aracın gün içindeki sırası: 500T'de <code>G D G D</code>, 98'de <code>G G G G</code> — “kalkış = tur” bulgusunun kesin kanıtı.</td>
+        <td><b>Evet</b> — doğrulama</td></tr>
+      <tr class="kullanildi"><td class="s">DTBASLAMAZAMANI</td><td><code>/Date(1729106611000)/</code></td><td class="d">⚠️</td>
+        <td><b>Format çözüldü:</b> milisaniye epoch, regex ile ayıklandı.</td><td><b>Evet</b></td></tr>
+      <tr class="kullanildi"><td class="s">DTBITISZAMANI</td><td>Bitiş zamanı</td><td class="d">⚠️</td>
+        <td><b>Süre = bitiş − başlangıç.</b> Bozuk kayıt taraması: negatif ve milyonlarca dakikalık değerler bulundu → <b>5–400 dk</b> süzgeci. Ayrıca yarım kalmış görevler (hattın kendi medyanının %40 altı) elendi: 3.410 sefer (%1,5).</td>
+        <td><b>Evet</b> — ölçü</td></tr>
+      <tr class="kullanildi"><td class="s">SGOREVDURUM</td><td>T / I / YK / A / B</td><td class="d">✅</td>
+        <td>Dağılım sayıldı: <b>T (tamamlandı) %94.</b> Sadece T alındı.</td><td><b>Evet</b> — süzgeç</td></tr>
+      <tr><td class="s">DTPLANLANANBASLANGICZAMANI</td><td>Planlanan başlangıç</td><td class="d">➖</td>
+        <td>Planlanan–gerçekleşen sapma analizi için potansiyel — bu projede kullanılmadı.</td><td>Hayır</td></tr>
+      <tr><td class="s">DTDUZENLENENBASLANGICZAMANI</td><td>Düzenlenen başlangıç</td><td class="d">➖</td><td>—</td><td>Hayır</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= DURAK ================= -->
+<section>
+  <h2>5 · Durak detayları <span class="rz rz-a">ARZ</span></h2>
+  <p class="kaynak">DurakDetay_GYY · 676 hat · 55.564 durak · 11 sütun</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Sütun</th><th>Ne taşıyor</th><th></th><th>Ne kontrol ettik → sonuç</th><th>Kullanıldı mı</th></tr></thead>
+    <tbody>
+      <tr class="kullanildi"><td class="s">HATKODU</td><td>Hat kodu</td><td class="d">✅</td><td>676 hat için tek seferde çekildi, <b>0 hata</b>.</td><td><b>Evet</b></td></tr>
+      <tr class="kullanildi"><td class="s">YON</td><td>G / D</td><td class="d">✅</td>
+        <td><b>Bölüm 6.5'in temeli.</b> 104 şüpheli hattın durak ağında kaç yön olduğuna bakıldı: 52'sinde iki yön de var (veri eksik), 52'si gerçekten tek yönlü.</td>
+        <td><b>Evet</b></td></tr>
+      <tr class="kullanildi"><td class="s">SIRANO</td><td>Durak sırası</td><td class="d">✅</td><td>Rota çizimi bu sıraya dayanıyor.</td><td><b>Evet</b></td></tr>
+      <tr><td class="s">DURAKKODU</td><td>Durak kodu</td><td class="d">➖</td>
+        <td>Talep tarafında karşılığı olmadığı için <b>join kurulamıyor</b>.</td><td>Hayır</td></tr>
+      <tr class="kullanildi"><td class="s">DURAKADI</td><td>Durak adı</td><td class="d">✅</td><td>—</td><td>Ekranda</td></tr>
+      <tr class="kullanildi"><td class="s">XKOORDINATI</td><td>Boylam</td><td class="d">✅</td>
+        <td>İstanbul sınırları (27,9–29,9 D) dışındaki kayıtlar elendi.</td><td><b>Evet</b> — harita</td></tr>
+      <tr class="kullanildi"><td class="s">YKOORDINATI</td><td>Enlem</td><td class="d">✅</td>
+        <td>İstanbul sınırları (40,7–41,7 K) kontrolü.</td><td><b>Evet</b> — harita</td></tr>
+      <tr><td class="s">DURAKTIPI</td><td>Durak tipi</td><td class="d">➖</td><td>—</td><td>Hayır</td></tr>
+      <tr><td class="s">ISLETMEBOLGE</td><td>İşletme bölgesi</td><td class="d">➖</td><td>Bölgesel analiz kapsam dışı.</td><td>Hayır</td></tr>
+      <tr><td class="s">ISLETMEALTBOLGE</td><td>Alt bölge</td><td class="d">➖</td><td>—</td><td>Hayır</td></tr>
+      <tr><td class="s">ILCEADI</td><td>İlçe</td><td class="d">➖</td>
+        <td>Coğrafi analiz için potansiyel — bu projede kullanılmadı.</td><td>Hayır</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= CANLI ================= -->
+<section>
+  <h2>6 · Canlı araç konumu <span class="rz rz-a">ARZ</span></h2>
+  <p class="kaynak">GetHatOtoKonum_json · hat başına · 9 sütun</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Sütun</th><th>Ne taşıyor</th><th></th><th>Ne kontrol ettik → sonuç</th><th>Kullanıldı mı</th></tr></thead>
+    <tbody>
+      <tr class="kullanildi"><td class="s">kapino</td><td>Araç</td><td class="d">✅</td>
+        <td>Aracı ölçümler arasında takip etmek için anahtar — hız ve yön bundan çıkıyor.</td><td><b>Evet</b></td></tr>
+      <tr class="kullanildi"><td class="s">enlem / boylam</td><td>Konum</td><td class="d">⚠️</td>
+        <td><b>Bozuk GPS taraması:</b> İstanbul sınırları dışındaki kayıtlar eleniyor. Ayrıca 120 km/sa üstü hız veren sıçramalar atılıyor.</td>
+        <td><b>Evet</b></td></tr>
+      <tr class="kullanildi"><td class="s">son_konum_zamani</td><td>GPS zaman damgası</td><td class="d">⚠️</td>
+        <td><b>Tazelenme aralığı ölçüldü:</b> 20 saniyede bir sorulup damgaların değişip değişmediğine bakıldı → servis <b>dakikada bir</b>, tam dakika başında tazeleniyor. 15 sn'lik sorgu isteklerin ¾'ünü boşa harcıyormuş → 30 sn'ye çekildi.</td>
+        <td><b>Evet</b> — hız hesabı</td></tr>
+      <tr class="sorunlu"><td class="s">guzergahkodu</td><td>Güzergâh + yön</td><td class="d">⚠️</td>
+        <td>Harf okunuyor ama <b>103 hatta güvenilmez</b> (bkz. tablo 2). Bu yüzden yön öncelikle hareket vektöründen belirleniyor, harf ikinci sırada.</td>
+        <td><b>Evet</b> — yedek</td></tr>
+      <tr class="sorunlu"><td class="s">yon</td><td>Hedef durak adı</td><td class="d">❌</td>
+        <td><b>İsim eşleştirme testi yapıldı:</b> 98'de “FENERTEPE YOLU” hem gidiş hem dönüş son durağıyla eşleşiyor (ilk 7 harf aynı) → yanlış yön seçiliyordu.</td>
+        <td>Sadece ekran yazısı</td></tr>
+      <tr><td class="s">hatkodu / hatad</td><td>Hat bilgisi</td><td class="d">➖</td>
+        <td>Zaten hat bazında sorguluyoruz.</td><td>Hayır</td></tr>
+      <tr><td class="s">yakinDurakKodu</td><td>En yakın durak</td><td class="d">➖</td>
+        <td><b>Kullanılmadı</b> — durak yakınlığını koordinatlardan kendimiz hesapladık. İleride trafik süzgecini basitleştirebilir.</td>
+        <td>Hayır</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= FILO ================= -->
+<section>
+  <h2>7 · Tüm filo konumu <span class="rz rz-a">ARZ</span></h2>
+  <p class="kaynak">GetFiloAracKonum_json · parametresiz · 6.911 araç · 8 sütun</p>
+
+  <p>Dokümanda geçmeyen, devir dosyasında “denenmemiş” duran metot. Denendi, <b>çalıştı</b>.
+  Şu an kullanılmıyor ama şehir geneli trafik katmanı için hazır duruyor.</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Sütun</th><th>Ne taşıyor</th><th></th><th>Ne kontrol ettik → sonuç</th><th>Kullanıldı mı</th></tr></thead>
+    <tbody>
+      <tr><td class="s">KapiNo / Plaka</td><td>Araç kimliği</td><td class="d">✅</td>
+        <td>6.911 benzersiz araç.</td><td>Henüz hayır</td></tr>
+      <tr><td class="s">Enlem / Boylam</td><td>Konum</td><td class="d">✅</td>
+        <td>6.911'in <b>hepsi</b> İstanbul sınırları içinde.</td><td>Henüz hayır</td></tr>
+      <tr><td class="s">Hiz</td><td>Aracın kendi hızı</td><td class="d">✅</td>
+        <td><b>Dağılım ölçüldü:</b> %64'ü 0 (durakta/garajda), %33'ü 5 km/sa üstü. Hesaplamaya gerek yok, araç kendi hızını söylüyor.</td>
+        <td>Henüz hayır</td></tr>
+      <tr><td class="s">Saat</td><td>Zaman damgası</td><td class="d">⚠️</td>
+        <td><b>Tazelik ölçüldü:</b> son 2 dakikada bildiren <b>5.766 araç</b>, bunların 2.138'i hareket halinde. Geri kalanı bayat kayıt — tarih içermediği için sadece saat farkıyla elenebiliyor.</td>
+        <td>Henüz hayır</td></tr>
+      <tr><td class="s">Operator / Garaj</td><td>İşletmeci</td><td class="d">➖</td><td>—</td><td>Hayır</td></tr>
+      <tr class="sorunlu"><td class="s">— hat kodu —</td><td><b>YOK</b></td><td class="d">❌</td>
+        <td>Bu uçta hat bilgisi bulunmuyor. Bu yüzden hat bazlı katman için <code>GetHatOtoKonum_json</code> gerekiyor.</td>
+        <td>—</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= OZET ================= -->
+<section>
+  <h2>Toplu bakış</h2>
+  <p class="kaynak">Yedi kaynak, 62 sütun</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>Kaynak</th><th>Sütun</th><th>✅ sağlam</th><th>⚠️ sorunlu</th><th>❌ kullanılamaz</th><th>➖ gereksiz</th></tr></thead>
+    <tbody>
+      <tr><td>Saatlik yolculuk <span class="rz rz-t">TALEP</span></td><td>13</td><td>3</td><td>2</td><td>4</td><td>4</td></tr>
+      <tr><td>Planlanan seferler</td><td>8</td><td>4</td><td>2</td><td>0</td><td>2</td></tr>
+      <tr><td>Hat listesi</td><td>5</td><td>2</td><td>0</td><td>1</td><td>2</td></tr>
+      <tr><td>Sefer arşivi</td><td>12</td><td>4</td><td>3</td><td>0</td><td>5</td></tr>
+      <tr><td>Durak detayları</td><td>11</td><td>6</td><td>0</td><td>0</td><td>5</td></tr>
+      <tr><td>Canlı konum</td><td>9</td><td>1</td><td>3</td><td>1</td><td>4</td></tr>
+      <tr><td>Tüm filo</td><td>8</td><td>3</td><td>1</td><td>1</td><td>3</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="kutu">
+    <span class="et">Rapora girecek cümle</span>
+    <p>“Yedi kaynaktaki 62 sütunun tamamı tek tek incelendi. Yedi sütunda ölçülebilir
+    sorun bulundu ve dördü kullanım dışı bırakıldı — bunların ikisi (<code>SEFER_SURESI</code>
+    ve <code>town</code>) kullanılsaydı sonucu doğrudan yanlış yönde etkileyecekti.”</p>
+  </div>
+</section>
+
+</div>

@@ -1,0 +1,463 @@
+<title>Dashboard Sunum Rehberi — İETT Arz-Talep Analizi</title>
+<style>
+  :root{
+    --ground:#F6F7F8; --surface:#FFFFFF; --surface-2:#FBFCFC;
+    --ink:#16191C; --ink-2:#525E69; --ink-3:#7B8792;
+    --line:#DEE3E7; --line-2:#EDF0F2;
+    --accent:#C1121F; --accent-soft:#FBE9EA;
+    --ok:#15703F; --ok-soft:#E7F4EC;
+    --warn:#9A5200; --warn-soft:#FBF0E2;
+    --stop:#8A1A1A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+      --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+      --line:#272D33; --line-2:#1F252A;
+      --accent:#F4626B; --accent-soft:#2B1418;
+      --ok:#59CE92; --ok-soft:#12251B;
+      --warn:#E2A65C; --warn-soft:#251B0F;
+      --stop:#FF8A8A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+    --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+    --line:#272D33; --line-2:#1F252A;
+    --accent:#F4626B; --accent-soft:#2B1418;
+    --ok:#59CE92; --ok-soft:#12251B;
+    --warn:#E2A65C; --warn-soft:#251B0F;
+    --stop:#FF8A8A;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--ground); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:16.5px; line-height:1.62; -webkit-font-smoothing:antialiased}
+  .mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px 96px}
+
+  header{border-bottom:1px solid var(--line); margin-bottom:44px; padding:56px 0 30px}
+  .eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent); font-weight:600}
+  h1{font-size:clamp(30px,4.6vw,44px); line-height:1.1; letter-spacing:-.022em;
+    font-weight:680; margin:14px 0 12px; text-wrap:balance}
+  .lede{font-size:18px; color:var(--ink-2); max-width:62ch; margin:0}
+
+  .yeni{background:var(--ok-soft); border:1px solid color-mix(in oklab,var(--ok) 30%,transparent);
+    border-radius:10px; padding:18px 20px; margin:0 0 18px}
+  .yeni h3{margin:0 0 8px; font-size:15px; font-weight:660; color:var(--ok)}
+  .yeni ul{margin:0}
+
+  section{border-top:1px solid var(--line); padding-top:34px; margin-top:40px;
+    display:grid; grid-template-columns:52px 1fr; gap:0 22px}
+  .no-rail{font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:600;
+    color:var(--accent); letter-spacing:.04em; padding-top:4px}
+  section > .govde{min-width:0}
+  h2{font-size:23px; letter-spacing:-.015em; font-weight:660; margin:0 0 4px; text-wrap:balance}
+  .ekran{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--ink-3); margin:0 0 18px}
+  h4{font-size:12px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3);
+    font-weight:640; margin:22px 0 9px; font-family:ui-monospace,Menlo,monospace}
+  p{margin:0 0 12px}
+  ul{margin:0 0 12px; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:7px}
+  ul li{position:relative; padding-left:18px}
+  ul li::before{content:""; position:absolute; left:2px; top:.62em; width:5px; height:5px;
+    border-radius:50%; background:var(--accent); opacity:.55}
+  b,strong{font-weight:640}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:var(--line-2);
+    border:1px solid var(--line); padding:1px 5px; border-radius:4px}
+
+  .repl{border-left:3px solid var(--accent); background:var(--surface);
+    padding:15px 18px; border-radius:0 8px 8px 0; margin:0 0 4px}
+  .repl .etiket{font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--accent); font-weight:640; display:block; margin-bottom:6px}
+  .repl p{margin:0; font-size:16.5px; line-height:1.5}
+
+  .kaydir{overflow-x:auto; margin:0 0 14px; border:1px solid var(--line);
+    border-radius:8px; background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:14.5px}
+  th,td{padding:9px 13px; text-align:left; border-bottom:1px solid var(--line-2); vertical-align:top}
+  thead th{font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-3); font-weight:600;
+    background:var(--surface-2); border-bottom:1px solid var(--line); white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.sayi{font-family:ui-monospace,Menlo,monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+  tr.vurgu td{background:var(--accent-soft)}
+
+  .rz{display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:10.5px;
+    letter-spacing:.07em; padding:2px 7px; border-radius:4px; font-weight:640; white-space:nowrap}
+  .rz-ok{background:var(--ok-soft); color:var(--ok)}
+  .rz-syn{background:var(--warn-soft); color:var(--warn)}
+
+  .sc{border:1px solid var(--line); border-radius:9px; background:var(--surface);
+    margin-bottom:11px; overflow:hidden}
+  .sc .s{padding:13px 17px 11px; font-weight:640; font-size:15.5px;
+    border-bottom:1px solid var(--line-2); background:var(--surface-2)}
+  .sc .c{padding:13px 17px; font-size:15px; color:var(--ink-2)}
+  .sc .c p:last-child{margin-bottom:0}
+  .sc .c b{color:var(--ink)}
+
+  @media (max-width:640px){
+    section{grid-template-columns:1fr; gap:0}
+    .no-rail{padding-top:0; margin-bottom:6px}
+    .wrap{padding:0 18px 72px}
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Sunum Rehberi · 17 Ağustos 2026</div>
+  <h1>Dashboard'ı mentoruna anlatma kılavuzu</h1>
+  <p class="lede">Ekranı yukarıdan aşağıya gezerken her bölümde ne göründüğü, sayının
+  nereden geldiği, ağzından çıkacak cümle ve gelebilecek soru. Sonunda mentorun
+  sorması muhtemel yedi soru ve senin cevabın var.</p>
+</header>
+
+<div class="yeni">
+  <h3>✓ Bu sürümde neler değişti</h3>
+  <ul>
+    <li><b>Gidiş+dönüş düzeltmesi yapıldı.</b> 103 hatta bir kalkış turun tamamını
+        kapsıyormuş; doluluk buna göre yeniden hesaplandı. Öneri listesi 178 → <b>96</b>.</li>
+    <li><b>Manşet cümlesi düzeltildi.</b> Eskiden rakamlarıyla çelişiyordu.</li>
+    <li><b>"Verisi şüpheli 17 hat" yazısı düzeltildi</b> — artık veriden okunuyor (30).</li>
+    <li><b>Haritada üç yenilik:</b> trafik katmanı, hareketten yön tespiti,
+        rotaların gerçek yola oturtulması.</li>
+  </ul>
+</div>
+
+<!-- ————————————————————————————————— -->
+
+<section>
+  <div class="no-rail">01</div>
+  <div class="govde">
+    <h2>Manşet ve dört kutu</h2>
+    <p class="ekran">Sayfanın en üstü</p>
+
+    <h4>Ekranda ne var</h4>
+    <p>Bir manşet cümlesi ve dört sayı kutusu. Mentor başka hiçbir yere bakmasa
+    bu dördünü anlamalı.</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>Kutu</th><th>Değer</th><th>Ne demek</th></tr></thead>
+      <tbody>
+        <tr><td>Hafta içi net</td><td class="sayi">−2.257</td>
+            <td>Azaltılabilecek sefer, eklenmesi gerekenden 2.257 fazla. <b>Toplamda fazlalık var.</b></td></tr>
+        <tr><td>Zirve açığı</td><td class="sayi">%2,9</td>
+            <td>08:00'de yolda olması gereken araç, mevcut tarifenin sağladığından <b>97 araç</b> fazla.</td></tr>
+        <tr><td>Öneri üretilen</td><td class="sayi">96</td>
+            <td>96 hat+saat kombinasyonu, <b>41</b> farklı hat. Sadece hafta içi ve gerçek ölçüm.</td></tr>
+        <tr><td>Kapsam</td><td class="sayi">676</td>
+            <td>Değerlendirilen hat. 59 hat veri yetersizliğinden dışarıda (bkz. 06).</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="repl">
+      <span class="etiket">Ağzından çıkacak cümle</span>
+      <p>“İstanbul'un otobüs filosu toplamda yetersiz değil — sorun dağılımda.
+      Eklenmesi gereken her sefere karşılık yaklaşık on beş sefer azaltılabiliyor.
+      Açık sabah 7–9 ve akşam 15–18'e sıkışmış. Çözüm yeni araç almak değil,
+      sefer dağılımını yeniden kurmak.”</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="no-rail">02</div>
+  <div class="govde">
+    <h2>Saatlik filo ihtiyacı</h2>
+    <p class="ekran">Manşetin altı · 24 saatlik sütun grafiği</p>
+
+    <ul>
+      <li>Gri sütun = <b>mevcut tarifenin</b> o saatte yolda tuttuğu araç</li>
+      <li>Kırmızı sütun = <b>ek ihtiyaç</b>. Zirve 08:00'de <b>97 araç</b></li>
+    </ul>
+
+    <h4>Buradaki ince nokta — mentor bunu sever</h4>
+    <p>Grafiğin altında “saatler birbirine eklenmez” yazıyor. <b>Neden:</b> aynı otobüs
+    gün boyu çalışıyor; saat 8'deki 97 araçla saat 9'daki araçlar aynı araçlar.
+    Filo ihtiyacı <b>en tepe saatin sayısıdır</b>. Toplarsan birim değişir:
+    308 <b>araç-saat</b> olur — anlamlı ama “kaç otobüs lazım” sorusunun cevabı değil.</p>
+
+    <div class="repl">
+      <span class="etiket">Ağzından çıkacak cümle</span>
+      <p>“97 araç, zirve saatin ihtiyacı. Saatleri toplamadım çünkü aynı otobüsler
+      gün boyu çalışıyor — toplarsam otobüs değil araç-saat saymış olurum.”</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="no-rail">03</div>
+  <div class="govde">
+    <h2>Sefer artır</h2>
+    <p class="ekran">Kapasitenin üstünde kalan hat-saatler · <span class="rz rz-ok">GERÇEK ÖLÇÜM</span></p>
+
+    <p><b>96 hat+saat · 41 hat · toplam 162 ek sefer · 308 araç-saat.</b>
+    Yalnızca hafta içi, yalnızca gerçek veri.</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>Hat</th><th>Saat</th><th>Yolcu</th><th>Sefer</th><th>Anlık yolcu</th><th>Ek sefer</th><th>Ek araç</th></tr></thead>
+      <tbody>
+        <tr><td>500T</td><td class="sayi">07:00</td><td class="sayi">3.217</td><td class="sayi">13</td><td class="sayi">145,5</td><td class="sayi">+5</td><td class="sayi">+14,1</td></tr>
+        <tr><td>500T</td><td class="sayi">08:00</td><td class="sayi">3.300</td><td class="sayi">13</td><td class="sayi">149,3</td><td class="sayi">+5</td><td class="sayi">+13,0</td></tr>
+        <tr><td>14ES</td><td class="sayi">07:00</td><td class="sayi">1.542</td><td class="sayi">6</td><td class="sayi">151,2</td><td class="sayi">+3</td><td class="sayi">+10,8</td></tr>
+        <tr><td>11ÜS</td><td class="sayi">17:00</td><td class="sayi">1.361</td><td class="sayi">4</td><td class="sayi">200,1</td><td class="sayi">+4</td><td class="sayi">+9,8</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>Sütunların anlamı</h4>
+    <ul>
+      <li><b>Anlık yolcu</b> — araçtaki tahmini yolcu, biniş sayısı değil. Devir katsayısına bölünmüş hali (bkz. soru 5)</li>
+      <li><b>Ek araç</b> — o ek seferin maliyeti. Aynı “+3 sefer” kısa hatta 1,2 araç, uzun hatta 7,7 araç demek</li>
+      <li>Hat adının altındaki <b>“· N saat daha”</b> rozeti: o hattın başka sıkışık saatleri de var</li>
+      <li><b>Satıra tıkla</b> → hattın detay paneli hemen altında açılır</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="no-rail">04</div>
+  <div class="govde">
+    <h2>Sefer azalt</h2>
+    <p class="ekran">Boş kalan hat-saatler · üç gün tipi sekmesi</p>
+
+    <p>Doluluk 20 kişi/seferin altında <b>ve</b> saatte en az 4 sefer olan kombinasyonlar.
+    Hedef doluluk 40; hiçbir saat 2 seferin altına indirilmiyor.</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>Gün tipi</th><th>Kaynak</th><th>Satır</th><th>Hat</th><th>Azaltılabilir sefer</th></tr></thead>
+      <tbody>
+        <tr class="vurgu"><td>Hafta içi</td><td><span class="rz rz-ok">GERÇEK</span></td><td class="sayi">699</td><td class="sayi">233</td><td class="sayi"><b>2.419</b></td></tr>
+        <tr><td>Cumartesi</td><td><span class="rz rz-syn">SENTETİK</span></td><td class="sayi">1.098</td><td class="sayi">275</td><td class="sayi">4.344</td></tr>
+        <tr><td>Pazar</td><td><span class="rz rz-syn">SENTETİK</span></td><td class="sayi">1.310</td><td class="sayi">229</td><td class="sayi">4.968</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>⚠ Burada mutlaka söylemen gereken şey</h4>
+    <p>Ekim 2024 dosyasında hafta sonu verisi hiç yok; hafta içi eğrisi katsayılarla
+    eğilerek üretildi. Listenin <b>%79'u</b> bu sentetik hafta sonundan geliyor.
+    Bunu sen söylemezsen mentor sorduğunda savunmada kalırsın; önden söylersen
+    metodolojik dürüstlük olur.</p>
+
+    <h4>Neden bu liste daha kırılgan</h4>
+    <p>Sıfıra yakın doluluk çoğu zaman gerçek boşluğu değil <b>veri atfı hatasını</b>
+    gösterir. Bu yüzden gün ortalaması 5 kişi/seferin altındaki <b>30 hat</b> listeden
+    çıkarıldı ve ayrıca işaretlendi. Artırma listesinde bu risk yok: veri hatası
+    orada hattı listeye sokmaz, listeden düşürür.</p>
+  </div>
+</section>
+
+<section>
+  <div class="no-rail">05</div>
+  <div class="govde">
+    <h2>Hat incelemesi ve harita</h2>
+    <p class="ekran">676 hattın 24 saatlik profili · projenin gösterişli kısmı</p>
+
+    <h4>Panelde ne var</h4>
+    <ul>
+      <li>Hat başlığı: uzunluk, <b>planlanan</b> ve <b>ölçülen</b> süre yan yana —
+          ikisinin farkı projenin en güçlü bulgusu (bkz. soru 6)</li>
+      <li>24 saatlik sütun grafiği + <b>kapasite çizgisi</b>, önerili saatlerde <code>+N</code></li>
+      <li>Altında saatlik yolcu ve saatlik sefer grafikleri</li>
+    </ul>
+
+    <h4>🗺 Güzergâh haritası</h4>
+    <ul>
+      <li>Rota, hattın <b>gerçek durak koordinatlarıyla</b> çizili ve <b>yola oturtulmuş</b>
+          — 676 hattın hepsi. Gidiş düz çizgi, dönüş kesikli</li>
+      <li><b>Saat kaydıracı:</b> rota rengi o saatin doluluğuna göre değişir</li>
+      <li><b>🔴 Canlı konumlar:</b> o hattaki gerçek otobüsler, 30 saniyede bir tazelenir.
+          Yön, aracın <b>gerçek hareketinden</b> ölçülüyor</li>
+      <li><b>🚦 Trafik:</b> otobüslerin ölçülen hızından yol renklendirmesi —
+          kırmızı sıkışık, yeşil akıcı</li>
+    </ul>
+
+    <div class="repl">
+      <span class="etiket">Sunumun en etkili anı</span>
+      <p>“Tarife bu hatta saatte 13 sefer diyor — şu an gerçekte 6 araç yolda.”
+      Canlı konumları aç, sayıyı ekranda göster. Sonra trafiği aç:
+      “otobüsler tam da en yavaş oldukları saatte daha fazla araca ihtiyaç duyuyor.”</p>
+    </div>
+
+    <h4>Ekranda yazılı dürüstlük notları</h4>
+    <p>(a) Renk <b>hat bazında</b>, durak bazında değil. (b) Otobüsün animasyondaki
+    konumu gerçek GPS izi değil. (c) Canlı konumlar <b>şu ana</b> ait, seçili saate değil.
+    (d) Trafik yalnızca otobüs geçen yollarda ölçülüyor; durakta bekleyen araçlar elendi.</p>
+
+    <h4>⚠ Sunumdan önce</h4>
+    <p>Canlı katman ve trafik <b>köprü çalışıyorken</b> çalışır:
+    <code>python3 11_canli_kopru.py</code> → <code>http://localhost:8770</code>.
+    İnternet de gerekir. Trafik renklerinin çıkması <b>1–1,5 dakika</b> sürer —
+    aracın iki kez görülmesi gerekiyor. Sunumdan önce bir kez deneyip çalıştığını gör.</p>
+  </div>
+</section>
+
+<section>
+  <div class="no-rail">06</div>
+  <div class="govde">
+    <h2>Değerlendirilemeyen hatlar</h2>
+    <p class="ekran">Veri yetersizliğinden dışarıda kalanlar</p>
+
+    <p>Dışlanan hatlar sessizce kaybolmasın diye. <b>Mentor bunu takdir eder</b> — çoğu
+    öğrenci projesinde dışlanan veri hiç görünmez.</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>Grup</th><th>Sayı</th><th>Neden dışarıda</th></tr></thead>
+      <tbody>
+        <tr><td>Metrobüs ailesi</td><td class="sayi">8 kod</td>
+            <td>Arz gerçek sıklığı yansıtmıyor; talep tek koda yığılmış</td></tr>
+        <tr><td>Arz verisi eksik</td><td class="sayi">52 hat</td>
+            <td>Durak ağında iki yön de var ama tarife sadece gidiş kalkışlarını döndürüyor</td></tr>
+        <tr><td>Verisi şüpheli</td><td class="sayi">30 hat</td>
+            <td>Gün ortalaması 5 kişi/seferin altında → veri şüphesi. Öneri üretilmiyor, işaretleniyor</td></tr>
+      </tbody>
+    </table></div>
+
+    <p>İlk iki grup toplamı <b>59 hat</b> (34A ikisinde birden). Üçüncü grup silinmedi,
+    sadece azaltma önerisi üretilmedi.</p>
+  </div>
+</section>
+
+<section>
+  <div class="no-rail">07</div>
+  <div class="govde">
+    <h2>Yöntem ve kısıtlar</h2>
+    <p class="ekran">Sayı nereden geliyor, nereye kadar güvenilir</p>
+
+    <h4>Tek cümlelik model</h4>
+    <p><b>Arz</b> (İETT SOAP API — 775 hat, 130.435 kalkış) <b>÷</b>
+       <b>Talep</b> (İBB açık veri CSV — Ekim 2024, 5 geçerli hafta içi gün, 2,77 M satır)
+       <b>=</b> sefer başına düşen yolcu. Kapasite varsayımı 110 (körüklü).</p>
+
+    <h4>Araç ihtiyacı ayrı bir adım</h4>
+    <p><code>araç = sefer sayısı × gerçek sefer süresi (hat, saat) ÷ 60</code></p>
+
+    <h4>Kısıtlar — dördü de aynı sebepten</h4>
+    <p>Yön, durak, araç ve dakika bilgisi <b>arz tarafında var, talep tarafında yok</b>.
+    Bu yüzden analizin çözünürlüğü <b>hat + gün tipi + saat</b>'te kalıyor.
+    Ayrıntısı <i>Veri Modeli</i> belgesinde.</p>
+  </div>
+</section>
+
+<section>
+  <div class="no-rail">S</div>
+  <div class="govde">
+    <h2>Mentorun soracağı yedi soru</h2>
+    <p class="ekran">Cevapları ezberleme — mantığını bil, kendi cümlenle söyle</p>
+
+    <div class="sc">
+      <div class="s">1 · “Neden Ekim 2024? Daha yeni veri yok mu?”</div>
+      <div class="c">
+        <p>Ekim 2024 dosyasında <b>31 gün değil 18 tarih</b> var, o 18'in de sadece
+        <b>5'inde gerçek veri</b>. Beşi de hafta içi. Bunu doluluk sayıları saçma çıkınca
+        geriye kazıyarak buldum.</p>
+        <p><b>Diğer aylar tarandı</b> — 60 dosyanın boyutu indirilmeden okundu, Mart 2023
+        açılıp içerik seviyesinde doğrulandı. Yine de Ekim 2024'te kaldım: asıl kazanç
+        gerçek hafta sonu olacaktı, o masadan kalkınca gerekçe kayboldu; ve arz 2026'dan
+        — 2023'e inersem zaman farkı 3 yıla çıkardı.</p>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="s">2 · “Gidiş ve dönüş yönünü neden ayırmadın?”</div>
+      <div class="c">
+        <p><b>Veriyle mümkün değil, bakılmadığı için değil.</b> Doluluk = yolcu ÷ sefer.
+        Paydada yön <b>var</b>, payda <b>yok</b> — İstanbulkart biniş yönü kaydetmiyor.</p>
+        <p>Üç yol denedim: (a) talep dosyasındaki <code>line</code> sütununun gizli yön
+        taşıdığı hipotezi — Mart 2023'te test edildi, çürüdü; (b) basışı araca, araçtan
+        yöne bağlamak — talep dosyasında araç sütunu yok; (c) servisin diğer metotları —
+        dördü de geçitte kapalı.</p>
+        <p><b>Zincirin geri kalanı hazır:</b> araç → görev → güzergâh kodu → yön.
+        Kapı numaralı basış verisi gelirse tek <code>merge</code> ile çalışır.</p>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="s">3 · “110 kapasitesi nereden geliyor?”</div>
+      <div class="c">
+        <p>Körüklü otobüs varsayımı — modeldeki serbest varsayım bu. Duyarlılık için
+        90 ve 130 ile de çalıştırılabilir.</p>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="s">4 · “Bir hatta 51 gidiş, 6 dönüş nasıl olur?” <span style="color:var(--accent)">← yeni bulgu</span></div>
+      <div class="c">
+        <p>Olmaz — bu bir veri okuma hatasıydı ve düzelttim. 98 hattında tarife 161 G /
+        15 D gösteriyordu. Bir otobüs 161 gidiş yapıp 15 dönüş yapamaz, bir uçta birikirdi.</p>
+        <p><b>Üç bağımsız kanıtla çözdüm:</b> (a) ölçülen sefer süresi bu hatlarda
+        tek yön uzunluğuna göre <b>tam yarı hız</b> veriyor (8,2 vs 17,2 km/sa, oran 2,09);
+        (b) aynı aracın gün içindeki görevleri <b>G, G, G, G</b> gidiyor — 500T'de
+        <b>G, D, G, D</b>; (c) düzeltmeden sonra iki grubun hızları çakışıyor.</p>
+        <p>Sonuç: o <b>103 hatta bir kalkış turun tamamı</b>. Kapasite kıyası bacak başına
+        yapılmalı. Düzelttim, öneri listesi 178'den <b>96</b>'ya indi.</p>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="s">5 · “Devir katsayısı 1,7 nereden çıktı, ne kadar güveniyorsun?”</div>
+      <div class="c">
+        <p>Talep verisi <b>biniş</b> sayıyor, araçtaki anlık yolcuyu değil — İstanbulkart
+        inişte okutulmuyor. Uzun hatta koltuk birkaç kez doluyor. Bu oran <b>devir</b>.</p>
+        <p><b>Dürüst ol:</b> bu bir ölçüm değil <b>çıkarım</b>, ve dairesellik taşıyor —
+        mevcut doluluk seviyelerinden türedi. Bu yüzden tek sayı değil <b>aralık</b> sunuyorum:</p>
+        <div class="kaydir"><table>
+          <thead><tr><th>devir</th><th>öneri</th><th>hat</th><th>ek sefer</th><th>zirve ek araç</th></tr></thead>
+          <tbody>
+            <tr><td class="sayi">1,0</td><td class="sayi">802</td><td class="sayi">183</td><td class="sayi">2.039</td><td class="sayi">633</td></tr>
+            <tr><td class="sayi">1,5</td><td class="sayi">167</td><td class="sayi">66</td><td class="sayi">305</td><td class="sayi">148</td></tr>
+            <tr class="vurgu"><td class="sayi"><b>1,7</b></td><td class="sayi"><b>96</b></td><td class="sayi"><b>41</b></td><td class="sayi"><b>162</b></td><td class="sayi"><b>97</b></td></tr>
+            <tr><td class="sayi">2,0</td><td class="sayi">38</td><td class="sayi">16</td><td class="sayi">60</td><td class="sayi">40</td></tr>
+            <tr><td class="sayi">2,3</td><td class="sayi">25</td><td class="sayi">11</td><td class="sayi">32</td><td class="sayi">23</td></tr>
+          </tbody>
+        </table></div>
+        <p><b>⭐ Kritik nokta:</b> belirsizlik <b>sıralamayı bozmuyor</b>. Devir tüm hatlara
+        aynı uygulandığı için 500T, 14ES, 11ÜS hangi katsayıyla bakarsan bak en üstte kalıyor.
+        Yani <i>“hangi hat, hangi saat”</i> cevabı sağlam; <i>“kaç araç”</i> cevabı belirsiz.
+        Katsayı İETT'nin yolcu sayım (APC) verisiyle netleşir.</p>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="s">6 · “Sefer sürelerini nereden aldın?” <span style="color:var(--accent)">← en güçlü hikâyen</span></div>
+      <div class="c">
+        <p>Önce hat listesindeki <code>SEFER_SURESI</code> alanını kullandım. Canlı araç
+        sayımıyla karşılaştırınca sistematik sapma çıktı.</p>
+        <p>Kontrol ettim: <code>HAT_UZUNLUGU ÷ SEFER_SURESI</code> korelasyonu <b>0,9842</b>
+        ve hatların %63'ü tek bir hız bandında. <b>Ölçüm değil, formül çıktısıymış.</b></p>
+        <p>Çözüm: <code>GetIettArsivGorev_json</code> — günde ~56.000 <b>gerçekleşen</b>
+        sefer kaydı. Talep verisiyle <b>aynı 5 günden</b> çektim (mevsim tuzağı:
+        Ağustos medyanı 59,8 dk, Ekim 66,3 dk — karıştırsam araç ihtiyacını %11 eksik
+        gösterirdim).</p>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="s">7 · “Haritadaki trafik bilgisi nereden geliyor?”</div>
+      <div class="c">
+        <p>Otobüslerin kendisinden. Canlı konum servisi her araç için GPS zaman damgası
+        veriyor; aynı aracı iki ölçümde yakalayınca aradaki mesafeyi geçen süreye bölüyorum.
+        Otobüsler böylece <b>hareketli trafik sensörüne</b> dönüşüyor — ticari trafik
+        servisleri de aynı yöntemi kullanır.</p>
+        <p>İki sınır ekranda yazılı: sadece otobüs geçen yollarda veri var, ve durakta
+        bekleyen araçlar (durağa 45 m'den yakın + yavaş) eleniyor.</p>
+        <p><b>Yan doğrulama:</b> İBB'nin kendi trafik indeksiyle bizim ölçtüğümüz sefer
+        süreleri arasındaki korelasyon <b>0,759</b> (p = 0,00002) — iki bağımsız kaynak,
+        iki farklı yıl, birbirini tutuyor.</p>
+      </div>
+    </div>
+
+    <h4>Sen de ona üç soru sor</h4>
+    <ul>
+      <li><b>“Saatlik biniş sayısını araç ihtiyacına çevirirken hangi devir katsayısını
+      kullanıyorsunuz?”</b> — cevap gelirse model çıkarımdan ölçüme geçer</li>
+      <li><b>“Kart basış kayıtlarının kapı numarası ile birlikte hâli sizde var mı?”</b>
+      — zincirin geri kalanı hazır, tek eksik bu</li>
+      <li><b>“Canlı konum servisinde kota sınırı ne kadar, staj kapsamında artırılabilir mi?”</b></li>
+    </ul>
+  </div>
+</section>
+
+</div>

@@ -1,0 +1,2 @@
+# Defterler GitHub'a ÇIKTISIZ gider (çıktılar veri içerebilir); yerel dosyalar değişmez.
+*.ipynb filter=defter-temizle

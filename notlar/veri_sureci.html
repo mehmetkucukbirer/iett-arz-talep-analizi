@@ -1,0 +1,564 @@
+<title>Veri Süreci — Adım Adım</title>
+<style>
+  :root{
+    --ground:#F6F7F8; --surface:#FFFFFF; --surface-2:#FBFCFC;
+    --ink:#16191C; --ink-2:#525E69; --ink-3:#7B8792;
+    --line:#DEE3E7; --line-2:#EDF0F2;
+    --accent:#C1121F; --accent-soft:#FBE9EA;
+    --arz:#1B5E8A; --arz-soft:#E6F0F7;
+    --talep:#8A5A00; --talep-soft:#FBF2E2;
+    --ok:#15703F; --ok-soft:#E7F4EC;
+    --stop:#8A1A1A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+      --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+      --line:#272D33; --line-2:#1F252A;
+      --accent:#F4626B; --accent-soft:#2B1418;
+      --arz:#6FB6E0; --arz-soft:#12222C;
+      --talep:#E0AC5E; --talep-soft:#251C0F;
+      --ok:#59CE92; --ok-soft:#12251B;
+      --stop:#FF8A8A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+    --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+    --line:#272D33; --line-2:#1F252A;
+    --accent:#F4626B; --accent-soft:#2B1418;
+    --arz:#6FB6E0; --arz-soft:#12222C;
+    --talep:#E0AC5E; --talep-soft:#251C0F;
+    --ok:#59CE92; --ok-soft:#12251B;
+    --stop:#FF8A8A;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--ground); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:16.5px; line-height:1.62; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px 96px}
+
+  header{border-bottom:1px solid var(--line); margin-bottom:40px; padding:56px 0 28px}
+  .eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent); font-weight:600}
+  h1{font-size:clamp(28px,4.4vw,42px); line-height:1.1; letter-spacing:-.022em;
+    font-weight:680; margin:14px 0 12px; text-wrap:balance}
+  .lede{font-size:18px; color:var(--ink-2); max-width:64ch; margin:0}
+
+  section{border-top:1px solid var(--line); padding-top:32px; margin-top:40px;
+    display:grid; grid-template-columns:58px 1fr; gap:0 22px}
+  .no{font-family:ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:600;
+    color:var(--accent); letter-spacing:.04em; padding-top:5px}
+  section > .g{min-width:0}
+  h2{font-size:22px; letter-spacing:-.015em; font-weight:660; margin:0 0 4px; text-wrap:balance}
+  .kaynak{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-3); margin:0 0 18px}
+  h3{font-size:12px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3);
+    font-weight:640; margin:24px 0 9px; font-family:ui-monospace,Menlo,monospace}
+  p{margin:0 0 12px}
+  b,strong{font-weight:640}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:var(--line-2);
+    border:1px solid var(--line); padding:1px 5px; border-radius:4px}
+
+  .kaydir{overflow-x:auto; margin:0 0 14px; border:1px solid var(--line);
+    border-radius:9px; background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:13px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  th,td{padding:7px 11px; text-align:left; border-bottom:1px solid var(--line-2);
+    white-space:nowrap; vertical-align:top}
+  thead th{font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3);
+    font-weight:600; background:var(--surface-2); border-bottom:1px solid var(--line)}
+  tbody tr:last-child td{border-bottom:none}
+  td.n{font-variant-numeric:tabular-nums; text-align:right}
+  .tblnot{font-size:12.5px; color:var(--ink-3); margin:-6px 0 18px; font-family:inherit}
+
+  pre{background:var(--surface); border:1px solid var(--line); border-radius:9px;
+    padding:15px 17px; overflow-x:auto; font-family:ui-monospace,Menlo,monospace;
+    font-size:12.5px; line-height:1.6; margin:0 0 16px}
+  pre b{color:var(--accent); font-weight:640}
+
+  .kutu{border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:0 9px 9px 0; padding:15px 17px; margin:0 0 16px}
+  .kutu p:last-child{margin-bottom:0}
+  .kutu .et{font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--accent); font-weight:640; display:block; margin-bottom:7px}
+
+  ul{margin:0 0 14px; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:7px}
+  ul li{position:relative; padding-left:18px}
+  ul li::before{content:""; position:absolute; left:2px; top:.62em; width:5px; height:5px;
+    border-radius:50%; background:var(--accent); opacity:.55}
+
+  .rz{display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:10px;
+    letter-spacing:.06em; padding:2px 6px; border-radius:4px; font-weight:640}
+  .rz-a{background:var(--arz-soft); color:var(--arz)}
+  .rz-t{background:var(--talep-soft); color:var(--talep)}
+
+  @media (max-width:640px){
+    section{grid-template-columns:1fr; gap:0}
+    .no{padding-top:0; margin-bottom:6px}
+    .wrap{padding:0 16px 72px}
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Veri Süreci · 17 Ağustos 2026</div>
+  <h1>Hangi veriyi çektik, içinde ne vardı, ne yaptık</h1>
+  <p class="lede">Ham kaynaklardan sonuç tablosuna kadar her adım: nereden geldi,
+  gerçek satırları neye benziyor, hangi temizliği neden yaptık. Sonunda tek bir
+  sayının uçtan uca izi var.</p>
+</header>
+
+<section style="border-top:none; padding-top:0; margin-top:0">
+  <div class="no">AKIŞ</div>
+  <div class="g">
+    <h2>On adımda özet</h2>
+
+<pre>  <b>ARZ</b> (İETT SOAP API)                    <b>TALEP</b> (İBB Açık Veri CSV)
+  ─────────────────────────                  ──────────────────────────
+  1 · hat listesi        781 hat             3 · saatlik yolculuk  2,77 M satır
+  2 · planlanan kalkış   130.435                 ↓ süz: OTOYOL, 5 geçerli gün
+      ↓ grupla: hat+gün tipi+saat                ↓ böl: 5 güne
+      arz_ozeti          31.567                  gercek_profil      13.899
+                                                 ↓ 4 · sentetik hafta sonu
+  5 · gerçekleşen sefer arşivi                   talep_final        41.697
+      ~56.400 kayıt/gün × 5 gün
+      ↓ medyan süre                                        ╲
+      gercek_sure        11.906                             ╲
+                                              ╱              ╲
+  6 · durak koordinatı  55.564   ────────────╱    <b>7 · BİRLEŞTİR</b>
+      guzergahlar.json                            hat+gün tipi+saat
+                                                        ▼
+                                            ┌───────────────────────┐
+                                            │  <b>doluluk.csv</b>          │
+                                            │  28.391 satır·676 hat │
+                                            └───────────────────────┘
+                                                        ▼
+                                            8 · öneriler   96 / 3.107
+                                            9 · rota yolları (OSRM)
+                                           10 · canlı katman + trafik
+</pre>
+  </div>
+</section>
+
+<!-- 1 -->
+<section>
+  <div class="no">01</div>
+  <div class="g">
+    <h2>Kaynak seçimi: GTFS bırakıldı, API'ye geçildi</h2>
+    <p class="kaynak">2. seans kararı</p>
+
+    <p>Önce İBB'nin GTFS dosyalarıyla başlandı. İki sorun çıktı ve bırakıldı:</p>
+    <ul>
+      <li><b>Türkçe karakterler bozuk</b> (mojibake) — “BEŞİKTAŞ” dosyada okunamaz
+          işaretlerle geliyordu; dosya <code>cp1254</code> kodlamasıyla yazılmış ama
+          <code>utf-8</code> etiketiyle sunuluyordu</li>
+      <li><b><code>stop_times</code> dosyası kesik</b> — 150 MB'lık dosya yarıda bitiyordu</li>
+    </ul>
+    <p>Mentorun önerisiyle <b>İETT SOAP web servisine</b> geçildi. API'de Türkçe
+    karakterler düzgün geliyor ve veri güncel.</p>
+
+    <div class="kutu">
+      <span class="et">SOAP nedir</span>
+      <p>İsteği düz metin olarak göndermiyorsun; bir <b>XML zarfının</b> içine koyuyorsun.
+      Zarfta “hangi metodu istiyorum, hangi parametreyle” yazıyor. Cevap da XML geliyor,
+      içinden veriyi çıkarıyorsun. Metot adı <code>_json</code> ile bitiyorsa cevap
+      XML'in içine gömülü JSON oluyor — iki kez çözmek gerekiyor.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="no">02</div>
+  <div class="g">
+    <h2>Hat listesi <span class="rz rz-a">ARZ</span></h2>
+    <p class="kaynak">GetHat_json · 781 hat · 1 istek</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>SHATKODU</th><th>SHATADI</th><th>TARIFE</th><th>HAT_UZUNLUGU</th><th>SEFER_SURESI</th></tr></thead>
+      <tbody><tr><td>500T</td><td>TUZLA ŞİFA MAHALLESİ - 4. LEVENT METRO</td><td>2 BİLETLİ</td><td class="n">56,77</td><td class="n">272,99</td></tr></tbody>
+    </table></div>
+    <p class="tblnot">Hattın künyesi: adı, uzunluğu (km), planlanan sefer süresi (dk).</p>
+
+    <p><b>Buradaki <code>SEFER_SURESI</code> sonradan sorun çıkardı</b> — ölçüm değil
+    formül çıktısı olduğu anlaşıldı (Adım 5). Uzunlukla korelasyonu 0,9842.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="no">03</div>
+  <div class="g">
+    <h2>Planlanan kalkışlar <span class="rz rz-a">ARZ</span></h2>
+    <p class="kaynak">GetPlanlananSeferSaati_json · 775 hat döndü · 130.435 kalkış · ~4 dakika</p>
+
+    <h3>Ham hali</h3>
+    <div class="kaydir"><table>
+      <thead><tr><th>SHATKODU</th><th>SGUZERAH</th><th>SYON</th><th>SGUNTIPI</th><th>SSERVISTIPI</th><th>DT</th></tr></thead>
+      <tbody>
+        <tr><td>500T</td><td>500T_D_D0</td><td>D</td><td>C</td><td>ÖHO</td><td>05:50</td></tr>
+        <tr><td>500T</td><td>500T_D_D0</td><td>D</td><td>C</td><td>ÖHO</td><td>06:05</td></tr>
+        <tr><td>500T</td><td>500T_D_D0</td><td>D</td><td>C</td><td>ÖHO</td><td>06:20</td></tr>
+      </tbody>
+    </table></div>
+    <p class="tblnot">Her satır <b>bir kalkış</b>. <code>SGUZERAH</code> = hat _ yön _ güzergâh varyantı.</p>
+
+    <h3>İki dönüştürme</h3>
+<pre>saat     = pd.to_numeric(DT.str[:2])         <b># "06:15" metninden 6</b>
+gun_tipi = SGUNTIPI.map({"I":"WEEKDAYS", "C":"SATURDAY", "P":"SUNDAY"})</pre>
+
+    <h3>Gruplama</h3>
+<pre>sefer_ham.groupby(["SHATKODU","gun_tipi","saat"]).size()   <b># 31.567 satır</b></pre>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>hat</th><th>gun_tipi</th><th>saat</th><th>sefer_sayisi</th></tr></thead>
+      <tbody>
+        <tr><td>500T</td><td>WEEKDAYS</td><td class="n">5</td><td class="n">11</td></tr>
+        <tr><td>500T</td><td>WEEKDAYS</td><td class="n">6</td><td class="n">16</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="kutu">
+      <span class="et">Karar: hangi kalkışlar sefer sayılsın</span>
+      <p><code>SSERVISTIPI</code>'de dört şüpheli kategori vardı (21.820 kalkış = %17).
+      Saatlik dağılımlarına bakıldı: <i>Gareli</i> gün boyu düz dağılmış (garaj hareketi
+      olsa gün başı/sonu yoğunlaşırdı), <i>Ara Dinlen</i> iki keskin zirve gösteriyor
+      (takviye deseni). <b>Hepsi normal sefer sayıldı.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="no">04</div>
+  <div class="g">
+    <h2>Saatlik yolculuk <span class="rz rz-t">TALEP</span></h2>
+    <p class="kaynak">hourly_transportation_202410.csv · 262 MB · 2.770.720 satır · 13 sütun</p>
+
+    <h3>Ham hali</h3>
+    <div class="kaydir"><table>
+      <thead><tr><th>transition_date</th><th>hour</th><th>road_type</th><th>line</th><th>transfer_type</th><th>number_of_passenger</th><th>product_kind</th><th>town</th><th>line_name</th></tr></thead>
+      <tbody>
+        <tr><td>2024-10-01</td><td class="n">0</td><td>OTOYOL</td><td>CEBECI - TAKSIM</td><td>Normal</td><td class="n">3</td><td>TAM</td><td>SARIYER</td><td>36T</td></tr>
+        <tr><td>2024-10-01</td><td class="n">0</td><td>OTOYOL</td><td>USKUDAR-GUZELTEPE-…</td><td>Aktarma</td><td class="n">2</td><td>INDIRIMLI1</td><td>BAKIRKOY</td><td>15B</td></tr>
+      </tbody>
+    </table></div>
+    <p class="tblnot">Her satır <b>tek bir basış değil</b>, bir grup: gün+saat+hat+bilet
+    türü kombinasyonundaki yolcu sayısı. 2,77 milyon satırın sebebi bu.</p>
+
+    <h3>Büyük dosyayı okuma</h3>
+<pre>for parca in pd.read_csv(TALEP_CSV, <b>chunksize=500_000</b>):
+    o = parca[(parca["road_type"] == "OTOYOL") &
+              (parca["transition_date"].isin(GECERLI_GUNLER))]</pre>
+    <p class="tblnot">262 MB'ı bir kerede belleğe almak yerine 500 binlik dilimler halinde
+    okuyup her dilimi süzüp özetliyoruz.</p>
+
+    <h3>Dört temizlik kararı</h3>
+    <ul>
+      <li><b>Sütun isimleri ters.</b> Hat kodu <code>line</code>'da değil <code>line_name</code>'de.
+          <code>line</code> hattın iki ucunu yazıyor.</li>
+      <li><b><code>road_type == "OTOYOL"</code> süzgeci şart.</b> Dosyada metro (%30) ve
+          vapur (%4) da var.</li>
+      <li><b><code>number_of_passenger</code> seçildi.</b> <code>number_of_passage</code>
+          aktarmayı iki kez sayıyor.</li>
+      <li><b><code>town</code> güvenilmez.</b> Üsküdar hattı için “BAKIRKOY” yazıyor. Kullanılmadı.</li>
+    </ul>
+
+    <div class="kutu">
+      <span class="et">⚠ Projenin en kritik bulgusu</span>
+      <p>Doluluk sayıları saçma çıktı (34 hattı için 7.170 kişi/sefer). Geriye kazıldı:</p>
+<pre>veri["transition_date"].nunique()        <b># 18 — 31 değil!</b>
+veri.groupby("transition_date").size()   <b># 13 tarihte 1.400-3.200 satır = gürültü</b></pre>
+      <p>Dosyada <b>31 gün değil 18 tarih</b> var, o 18'in de yalnızca <b>5'inde</b>
+      gerçek veri: 2, 4, 16, 17, 18 Ekim — hepsi hafta içi. Günlük ortalama için bölen
+      <b>23 değil 5</b>. Önceki hesap <b>4,6 kat hatalıydı</b>.</p>
+      <p><b>Kural oldu:</b> her yeni veri dosyasında ilk kontrol tarih kapsamı.</p>
+    </div>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>hat</th><th>saat</th><th>yolcu_gunluk</th></tr></thead>
+      <tbody>
+        <tr><td>500T</td><td class="n">5</td><td class="n">596,4</td></tr>
+        <tr><td>500T</td><td class="n">8</td><td class="n">3.300,0</td></tr>
+      </tbody>
+    </table></div>
+    <p class="tblnot">Sonuç: 13.899 satır, 798 hat, günlük toplam 4.112.738 yolcu.</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="no">05</div>
+  <div class="g">
+    <h2>Sentetik hafta sonu <span class="rz rz-t">TALEP</span></h2>
+    <p class="kaynak">27.798 satır üretildi · mentorun isteği</p>
+
+    <p>Beş geçerli günün hepsi hafta içiydi. Hafta sonu iki parçadan kuruldu:</p>
+    <ul>
+      <li><b>Seviye — varsayım:</b> cumartesi hafta içinin %72'si, pazar %52'si</li>
+      <li><b>Şekil — gerçek hafta içi eğrisinden:</b> saatlik katsayılarla eğiliyor
+          (sabah 7-8 düşürülüyor, gece ve öğleden sonra yükseltiliyor)</li>
+    </ul>
+
+    <div class="kutu">
+      <span class="et">Yapılan hata ve nasıl yakalandığı</span>
+      <p>İlk sürümde şekil <b>arz</b> verisinden alınmıştı. Sonuç: doluluk her saatte
+      aynı çıktı, grafikte hafta sonu çizgileri <b>dümdüz</b> oldu — çünkü pay ve payda
+      birlikte hareket ediyordu. Sayılara bakarak fark edilmezdi; <b>grafiğe bakınca
+      2 saniyede belli oldu.</b></p>
+      <p><b>Ders:</b> sentetik veriyi mutlaka çizdirip kontrol et.</p>
+    </div>
+
+    <p><code>np.random.default_rng(42)</code> ile ±%7 gürültü eklendi.
+    <b>42 = tohum</b>: aynı tohumla kod bin kez çalışsa aynı sayıları üretir —
+    tekrarlanabilirlik için şart.</p>
+
+    <p><b>Sonradan doğrulandı:</b> Mart 2023'ün gerçek rakamlarından hafta sonu oranı
+    cumartesi ≈ %77, pazar ≈ %55 çıktı. Varsayımımız (%72/%52) gerçeğe yakın ve biraz
+    muhafazakârmış.</p>
+  </div>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="no">06</div>
+  <div class="g">
+    <h2>Gerçekleşen sefer arşivi <span class="rz rz-a">ARZ</span></h2>
+    <p class="kaynak">GetIettArsivGorev_json · ~56.400 kayıt/gün · aynı 5 gün</p>
+
+    <h3>Ham hali</h3>
+<pre>SHATKODU                    = '500T'
+SGUZERGAHKODU               = '500T_G_D5434'      <b>← yön içeriyor</b>
+SKAPINUMARA                 = 'C-356'             <b>← araç</b>
+DTBASLAMAZAMANI             = '/Date(1729106611000)/'
+DTBITISZAMANI               = '/Date(1729112739000)/'
+SGOREVDURUM                 = 'T'                 <b>← T = tamamlandı</b>
+DTPLANLANANBASLANGICZAMANI  = '/Date(1729106100000)/'</pre>
+
+    <h3>Üç temizlik adımı</h3>
+    <ul>
+      <li><b>Tarih ayıklama:</b> <code>/Date(1729106611000)/</code> milisaniye epoch —
+          regex ile sayı çekilip 1000'e bölünüyor. Süre = bitiş − başlangıç.</li>
+      <li><b>Kaba aralık:</b> <code>5–400 dakika</code>. Arşivde negatif ve milyonlarca
+          dakikalık bozuk kayıtlar var.</li>
+      <li><b>Yarım kalmış görevler:</b> kaba aralık bunları yakalamıyor — 11ÜS
+          (medyan ~90 dk) saat 3'te “7 dakikalık sefer” gösteriyordu. Sabit eşik işe
+          yaramaz (hatlar 10–270 dk arası), bu yüzden <b>her sefer kendi hattının
+          medyanıyla</b> kıyaslanıyor:</li>
+    </ul>
+<pre>hat_medyan = hepsi.groupby("SHATKODU")["sure"].transform("median")
+hepsi = hepsi[hepsi["sure"] >= hat_medyan * <b>0.40</b>]</pre>
+    <p class="tblnot">Etkisi cerrahi: 3.410 sefer elendi (%1,5), genel medyan 66,3 → 66,8
+    (gerçek seferlere dokunmadı), saat 3 sistem medyanı 32,6 → 41,3.</p>
+
+    <h3>Üç kademeli sonuç tablosu</h3>
+    <div class="kaydir"><table>
+      <thead><tr><th>hat</th><th>saat</th><th>sure_dk</th><th>n</th></tr></thead>
+      <tbody>
+        <tr><td>500T</td><td class="n">5</td><td class="n">123,8</td><td class="n">53</td></tr>
+        <tr><td>500T</td><td class="n">6</td><td class="n">158,6</td><td class="n">77</td></tr>
+      </tbody>
+    </table></div>
+    <p class="tblnot">hat+saat (11.906 satır) → hat geneli (810) → sistem saati (24).
+    Hafta içi çiftlerin <b>%95'inde</b> en ince kademe bulunuyor.</p>
+
+    <div class="kutu">
+      <span class="et">Mevsim tuzağı — fark edildi ve kaçınıldı</span>
+      <p>İlk deneme Ağustos 2026 verisiyle yapıldı: medyan 59,8 dk. Ekim 2024'te 66,3 dk.
+      Ağustos süreleriyle Ekim talebini birleştirmek araç ihtiyacını <b>%11 eksik</b>
+      gösterirdi. Bu yüzden arşiv, talep verisiyle <b>aynı 5 günden</b> çekildi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="no">07</div>
+  <div class="g">
+    <h2>Durak koordinatları <span class="rz rz-a">ARZ</span></h2>
+    <p class="kaynak">DurakDetay_GYY · 676 hat · 55.564 durak · ~10 dakika · 0 hata</p>
+
+<pre>{hat: {yon: [[boylam, enlem, durak_adi], ...]}}
+
+500T · G yönü:
+  [29.36501, 40.82765, 'ŞİFA SONDURAK']
+  [29.36476, 40.82839, '23 NİSAN CADDESİ']
+  [29.36602, 40.83093, 'KARAKAYA']</pre>
+
+    <p>Bu metot diğerlerinden iki yönden farklı: parametre adı <code>hat_kodu</code>
+    (küçük harf, alt çizgili), ve adı <code>_json</code> ile bitmediği için cevap
+    gömülü JSON değil <b>düz XML</b> geliyor.</p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section>
+  <div class="no">08</div>
+  <div class="g">
+    <h2>Birleştirme ve doluluk</h2>
+    <p class="kaynak">28.391 satır · 676 hat</p>
+
+<pre>son = arz.merge(talep_final, on=["hat", "gun_tipi", "saat"])</pre>
+    <p class="tblnot">Üç sütun birden eşleşmeli — yoksa yanlış saatin yolcusunu yanlış
+    saatin seferine bölerdik. Talep 798 hat, arz 775 hat, <b>eşleşen 724</b>.</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>hat</th><th>saat</th><th>yolcu</th><th>sefer</th><th>bacak</th><th>kapasite_sefer</th><th>doluluk</th><th>devir</th><th>etkin_kapasite</th><th>etkin_doluluk</th></tr></thead>
+      <tbody>
+        <tr><td>500T</td><td class="n">7</td><td class="n">3.216,6</td><td class="n">13</td><td class="n">1</td><td class="n">13</td><td class="n">247,4</td><td class="n">1,7</td><td class="n">187,0</td><td class="n">145,5</td></tr>
+        <tr><td>500T</td><td class="n">8</td><td class="n">3.300,0</td><td class="n">13</td><td class="n">1</td><td class="n">13</td><td class="n">253,8</td><td class="n">1,7</td><td class="n">187,0</td><td class="n">149,3</td></tr>
+        <tr><td>500T</td><td class="n">9</td><td class="n">2.247,8</td><td class="n">12</td><td class="n">1</td><td class="n">12</td><td class="n">187,3</td><td class="n">1,7</td><td class="n">187,0</td><td class="n">110,2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>İki düzeltme sütunu</h3>
+    <ul>
+      <li><b><code>bacak</code></b> — bir kalkışın kaç tek-yön seferi ürettiği.
+          103 hatta tarife neredeyse tek yönlü görünüyordu (98: 161 G / 15 D).
+          Bir hat 161 gidiş yapıp 15 dönüş yapamaz: o hatlarda bir kalkış
+          <b>turun tamamı</b>. Üç kanıtla doğrulandı — yarı hız (8,2 vs 17,2 km/sa),
+          aynı aracın <code>G G G G</code> görev dizisi, düzeltme sonrası hızların çakışması.</li>
+      <li><b><code>devir</code></b> — koltuğun bir seferde kaç kişiye hizmet ettiği.
+          Talep <b>biniş</b> sayıyor, araçtaki anlık yolcuyu değil. 8 km üstü hatlarda 1,7.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 9 -->
+<section>
+  <div class="no">09</div>
+  <div class="g">
+    <h2>Öneri listeleri</h2>
+    <p class="kaynak">artırma 96 satır · azaltma 3.107 satır</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>hat</th><th>saat</th><th>yolcu</th><th>sefer</th><th>doluluk</th><th>etkin_doluluk</th><th>gercek_sure</th><th>gereken_sefer</th><th>ek_sefer</th><th>ek_arac</th></tr></thead>
+      <tbody>
+        <tr><td>11ÜS</td><td class="n">7</td><td class="n">1.634,2</td><td class="n">6</td><td class="n">272,4</td><td class="n">160,2</td><td class="n">126,3</td><td class="n">9</td><td class="n">3</td><td class="n">6,31</td></tr>
+        <tr><td>11ÜS</td><td class="n">8</td><td class="n">1.698,4</td><td class="n">5</td><td class="n">339,7</td><td class="n">199,8</td><td class="n">99,6</td><td class="n">10</td><td class="n">5</td><td class="n">8,29</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Eşikler</h3>
+    <ul>
+      <li><b>Artırma:</b> anlık yolcu &gt; 110 · en az 3 sefer · sadece hafta içi</li>
+      <li><b>Azaltma:</b> anlık yolcu &lt; 20 · en az 4 sefer · hedef 40 · hiçbir saat 2 seferin altına inmez</li>
+      <li><b>Koruma:</b> gün ortalaması 5 kişi/seferin altındaki 30 hat azaltma listesine alınmıyor —
+          sıfıra yakın doluluk çoğu zaman gerçek boşluğu değil <b>veri atfı hatasını</b> gösterir</li>
+    </ul>
+  </div>
+</section>
+
+<!-- iz -->
+<section>
+  <div class="no">İZ</div>
+  <div class="g">
+    <h2>Tek bir sayının uçtan uca izi</h2>
+    <p class="kaynak">500T · hafta içi · saat 08:00</p>
+
+<pre>talep      3.300 yolcu          <b>← 5 geçerli güne bölünmüş ortalama</b>
+arz           13 kalkış         <b>← tarifeden, hafta içi saat 8</b>
+bacak          1                <b>← 500T dengeli hat, kalkış = tek yön</b>
+
+doluluk    = 3.300 / 13         = <b>253,8 biniş/sefer</b>
+devir      = 1,7                <b>← 56,8 km > 8 km</b>
+anlık yolcu= 253,8 / 1,7        = <b>149,3</b>
+kapasite   = 110 × 1,7          = 187
+
+149,3 > 110                     → <b>ÖNERİ ÜRETİLİR</b>
+
+gereken bacak = ceil(3.300/187) = 18
+gereken sefer = ceil(18/1)      = 18
+ek sefer      = 18 − 13         = <b>+5 sefer</b>
+
+ölçülen süre  = 155,7 dk        <b>← arşivden, tarifeden değil</b>
+ek araç       = 5 × 155,7/60    = <b>+13,0 araç</b></pre>
+
+    <p>Ekranda gördüğün <code>500T · 08:00 · +5 sefer · +13,0 araç</code> satırı
+    tam olarak bu zincirden çıkıyor.</p>
+  </div>
+</section>
+
+<!-- dislanan -->
+<section>
+  <div class="no">DIŞ</div>
+  <div class="g">
+    <h2>Analiz dışı bırakılanlar</h2>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>Grup</th><th>Sayı</th><th>Neden</th></tr></thead>
+      <tbody>
+        <tr><td>Metrobüs ailesi</td><td class="n">8 kod</td>
+            <td>Arz 8 koda bölünmüş, talep tek koda yığılmış → 34G saat 17'de 122 sefer, 14,8 yolcu</td></tr>
+        <tr><td>Arz verisi eksik</td><td class="n">52 hat</td>
+            <td>Durak ağında iki yön var, tarifede sadece gidiş → payda küçük, doluluk yapay yüksek</td></tr>
+        <tr><td>Verisi şüpheli</td><td class="n">30 hat</td>
+            <td>Gün ortalaması &lt; 5 kişi/sefer → veri şüphesi. Silinmedi, işaretlendi</td></tr>
+      </tbody>
+    </table></div>
+    <p class="tblnot">İlk ikisi toplam 59 hat (34A ikisinde birden). Kalan: <b>676 hat</b>.</p>
+  </div>
+</section>
+
+<!-- gorsel -->
+<section>
+  <div class="no">10</div>
+  <div class="g">
+    <h2>Görselleştirme katmanları</h2>
+    <p class="kaynak">analizi etkilemez — yalnızca harita</p>
+
+    <ul>
+      <li><b>Rota yolları (OSRM).</b> Durak koordinatları rota motoruna gönderilip gerçek
+          yol geometrisi alındı — 676 hat, 0 hata. Kalite kontrolü: çizilen uzunluk /
+          İETT'nin bildirdiği uzunluk medyanı <b>1,05</b>.</li>
+      <li><b>Canlı konum.</b> <code>GetHatOtoKonum_json</code>, 30 saniyede bir.
+          Servisin <b>dakikada bir</b> tazelendiği ölçüldü — 15 saniyede sormak
+          isteklerin dörtte üçünü boşa harcıyordu.</li>
+      <li><b>Yön tespiti.</b> Aracın iki ölçüm arasındaki <b>hareket vektörü</b>
+          rota yönüyle karşılaştırılıyor. Güzergâh kodundaki harf 103 hatta güvenilmez
+          olduğu için bu yöntem gerekti.</li>
+      <li><b>Trafik.</b> Aynı aracın iki ölçümü arasındaki mesafe ÷ süre = hız.
+          Otobüsler hareketli trafik sensörü gibi kullanılıyor. Durağa 45 m'den yakın
+          ve yavaş ölçümler eleniyor.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- dogrulama -->
+<section>
+  <div class="no">✓</div>
+  <div class="g">
+    <h2>Yapılan doğrulamalar</h2>
+    <p class="kaynak">projenin en güçlü tarafı</p>
+
+    <div class="kaydir"><table>
+      <thead><tr><th>#</th><th>Sınama</th><th>Sonuç</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td>Talep verisi doğru mu? (API vs CSV)</td><td>✅ Spearman 0,862</td></tr>
+        <tr><td class="n">2</td><td>Hangi kalkışlar sefer sayılmalı?</td><td>✅ geniş tanım doğru</td></tr>
+        <tr><td class="n">3</td><td>Tarife eksik mi? (canlı araç sayımı)</td><td>✅ şüphe çürüdü</td></tr>
+        <tr><td class="n">4</td><td>Yön ayrımı yapılabilir mi?</td><td>❌ veriyle imkânsız</td></tr>
+        <tr><td class="n">5</td><td>Tek yönlü görünen hatlar gerçek mi?</td><td>⚠️ 52 hatta veri eksik</td></tr>
+        <tr><td class="n">6</td><td>Saat atfı kayıyor mu?</td><td>⚠️ %8-23, ölçüldü</td></tr>
+        <tr><td class="n">7</td><td>Metrobüs tam dışlandı mı?</td><td>❌ 6 kod kalmış, düzeltildi</td></tr>
+        <tr><td class="n">8</td><td>Azaltma listesi güvenilir mi?</td><td>⚠️ 30 hat korumaya alındı</td></tr>
+        <tr><td class="n">9</td><td>Sefer süresi doğru mu?</td><td>❌ planlama değeriymiş, ölçüldü</td></tr>
+        <tr><td class="n">10</td><td>Biniş = anlık yolcu mu?</td><td>❌ devir katsayısı eklendi</td></tr>
+        <tr><td class="n">11</td><td>Arz resmi tarifeyle tutuyor mu?</td><td>✅ birebir</td></tr>
+        <tr><td class="n">12</td><td>Bir kalkış = bir tek yön mü?</td><td>❌ 103 hatta tur, düzeltildi</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="kutu">
+      <span class="et">Rapora girecek çerçeve</span>
+      <p>Bu tablo projenin omurgası. Her satır bir <b>şüphe → ölçüm → karar</b> zinciri.
+      Kırmızı işaretliler “hata bulundu ve düzeltildi”, sarılar “ölçüldü, büyüklüğü
+      biliniyor, bilinçli olarak düzeltilmedi”. İkisi de gizlenmiş varsayımdan iyidir.</p>
+    </div>
+  </div>
+</section>
+
+</div>

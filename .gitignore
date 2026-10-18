@@ -1,0 +1,19 @@
+# Veri — YAYIMLANMIYOR (19 Ekim 2026 kararı: "kod evet, veri hayır").
+# Ham veri (İBB açık veri + staj mentorunun verdiği yön verisi) ve ondan türetilen
+# sonuç tabloları / dashboard verisi. Sonuçların özeti README'de.
+veri/
+cikti/
+
+# Staj raporu ve kişisel bilgiler
+staj-raporu/
+
+# Ortam / sistem
+venv/
+.claude/
+.DS_Store
+__pycache__/
+*.pyc
+test.ipynb
+
+# Başka projeye ait (Otobüsüm Nerede alternatifi) — kendi deposunda duruyor
+PROMPT_uygulama.md

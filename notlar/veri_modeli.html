@@ -1,0 +1,299 @@
+<title>Veri Modeli ve Birleştirme Haritası — İETT Arz-Talep Analizi</title>
+<style>
+  :root{
+    --ground:#F6F7F8; --surface:#FFFFFF; --surface-2:#FBFCFC;
+    --ink:#16191C; --ink-2:#525E69; --ink-3:#7B8792;
+    --line:#DEE3E7; --line-2:#EDF0F2;
+    --accent:#C1121F; --accent-soft:#FBE9EA;
+    --arz:#1B5E8A; --arz-soft:#E6F0F7;
+    --talep:#8A5A00; --talep-soft:#FBF2E2;
+    --ok:#15703F; --ok-soft:#E7F4EC;
+    --stop:#8A1A1A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+      --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+      --line:#272D33; --line-2:#1F252A;
+      --accent:#F4626B; --accent-soft:#2B1418;
+      --arz:#6FB6E0; --arz-soft:#12222C;
+      --talep:#E0AC5E; --talep-soft:#251C0F;
+      --ok:#59CE92; --ok-soft:#12251B;
+      --stop:#FF8A8A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E1113; --surface:#161A1D; --surface-2:#1B2024;
+    --ink:#E9EDF0; --ink-2:#9CA8B2; --ink-3:#75818B;
+    --line:#272D33; --line-2:#1F252A;
+    --accent:#F4626B; --accent-soft:#2B1418;
+    --arz:#6FB6E0; --arz-soft:#12222C;
+    --talep:#E0AC5E; --talep-soft:#251C0F;
+    --ok:#59CE92; --ok-soft:#12251B;
+    --stop:#FF8A8A;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:16.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+  .wrap{max-width:1000px; margin:0 auto; padding:0 24px 96px}
+
+  header{border-bottom:1px solid var(--line); margin-bottom:40px; padding:56px 0 28px}
+  .eyebrow{
+    font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent); font-weight:600;
+  }
+  h1{font-size:clamp(28px,4.4vw,42px); line-height:1.1; letter-spacing:-.022em;
+     font-weight:680; margin:14px 0 12px; text-wrap:balance}
+  .lede{font-size:18px; color:var(--ink-2); max-width:64ch; margin:0}
+
+  h2{font-size:22px; letter-spacing:-.015em; font-weight:660; margin:0 0 6px; text-wrap:balance}
+  section{border-top:1px solid var(--line); padding-top:32px; margin-top:38px}
+  .alt{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:.12em;
+       text-transform:uppercase; color:var(--ink-3); margin:0 0 18px}
+  h3{font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+     font-weight:640; margin:26px 0 10px; font-family:ui-monospace,Menlo,monospace}
+  p{margin:0 0 12px}
+  b,strong{font-weight:640}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:var(--line-2);
+       border:1px solid var(--line); padding:1px 5px; border-radius:4px}
+
+  .kaydir{overflow-x:auto; margin:0 0 16px; border:1px solid var(--line);
+          border-radius:9px; background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:14px}
+  th,td{padding:9px 13px; text-align:left; border-bottom:1px solid var(--line-2); vertical-align:top}
+  thead th{font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.1em;
+           text-transform:uppercase; color:var(--ink-3); font-weight:600;
+           background:var(--surface-2); border-bottom:1px solid var(--line); white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.k{font-family:ui-monospace,Menlo,monospace; font-size:12.5px; white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap;
+       font-family:ui-monospace,Menlo,monospace; font-size:13px}
+
+  .rz{display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:10px;
+      letter-spacing:.06em; padding:2px 6px; border-radius:4px; font-weight:640; white-space:nowrap}
+  .rz-a{background:var(--arz-soft); color:var(--arz)}
+  .rz-t{background:var(--talep-soft); color:var(--talep)}
+  .rz-s{background:var(--ok-soft); color:var(--ok)}
+
+  pre{background:var(--surface); border:1px solid var(--line); border-radius:9px;
+      padding:16px 18px; overflow-x:auto; font-family:ui-monospace,Menlo,monospace;
+      font-size:13px; line-height:1.62; margin:0 0 16px}
+  pre b{color:var(--accent); font-weight:640}
+
+  .kutu{border:1px solid var(--line); border-left:3px solid var(--accent);
+        background:var(--surface); border-radius:0 9px 9px 0; padding:16px 18px; margin:0 0 16px}
+  .kutu p:last-child{margin-bottom:0}
+  .kutu .et{font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.12em;
+            text-transform:uppercase; color:var(--accent); font-weight:640;
+            display:block; margin-bottom:7px}
+
+  ul{margin:0 0 14px; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:7px}
+  ul li{position:relative; padding-left:18px}
+  ul li::before{content:""; position:absolute; left:2px; top:.62em; width:5px; height:5px;
+                border-radius:50%; background:var(--accent); opacity:.55}
+
+  @media (max-width:640px){ .wrap{padding:0 16px 72px} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Veri Modeli · 12 Ağustos 2026</div>
+  <h1>Hangi dosya hangisiyle birleşiyor</h1>
+  <p class="lede">Projedeki her veri kaynağı: bir satırı ne anlatıyor, anahtarı ne,
+  neyle birleşiyor. Sonunda birleştirilemeyenler ve nedeni var — çıktının
+  çözünürlüğünü belirleyen şey tam olarak orası.</p>
+</header>
+
+<section style="border-top:none; padding-top:0; margin-top:0">
+  <h2>Tek şemada özet</h2>
+  <p class="alt">İki taraf, üç ortak anahtar</p>
+
+<pre>   <b>ARZ</b> (İETT SOAP API)                    <b>TALEP</b> (İBB Açık Veri CSV)
+   ────────────────────────                    ─────────────────────────
+   sefer_ham        130.435 kalkış             hourly_transportation
+     ↓ grupla                                    2.770.720 satır
+   arz_ozeti        31.567 satır                 ↓ süz + grupla
+     hat · gün tipi · saat                     gercek_haftaici_profil
+                                                 hat · saat
+                    ╲                          ╱
+                     ╲     <b>ORTAK ANAHTAR</b>    ╱
+                      ╲   hat + gün tipi     ╱
+                       ╲      + saat        ╱
+                        ▼                  ▼
+                     ┌──────────────────────────┐
+                     │   <b>doluluk.csv</b>            │
+                     │   28.391 satır · 676 hat │
+                     └──────────────────────────┘
+                                 │
+                 ┌───────────────┼───────────────┐
+                 ▼               ▼               ▼
+          oneri_artir     oneri_azalt     veri_supheli
+             96             3.107              30
+</pre>
+
+  <div class="kutu">
+    <span class="et">Neden çözünürlük hat + gün tipi + saat</span>
+    <p>Bir birleştirmenin çözünürlüğü <b>en kaba ortak anahtarına</b> eşittir. İki tarafı
+    birbirine bağlayan üç alan var: hat, gün tipi, saat. Dördüncü bir ortak alan
+    (yön, durak, araç, dakika) <b>yok</b> — bu yüzden çıktı daha ince olamıyor.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Kaynak dosyalar</h2>
+  <p class="alt">Bir satır ne anlatıyor · anahtarı ne</p>
+
+  <h3>Arz tarafı</h3>
+  <div class="kaydir"><table>
+    <thead><tr><th>Dosya / kaynak</th><th>Satır</th><th>Bir satır =</th><th>Anahtar</th></tr></thead>
+    <tbody>
+      <tr><td class="k">sefer_ham_20260806.csv <span class="rz rz-a">ham</span></td><td class="n">130.435</td>
+          <td>Tarifedeki <b>bir kalkış</b></td><td class="k">SHATKODU + SGUNTIPI + DT + SGUZERAH</td></tr>
+      <tr><td class="k">arz_ozeti.csv</td><td class="n">31.567</td>
+          <td>Bir hattın bir gün tipinde bir saatteki <b>sefer sayısı</b></td><td class="k">hat + gun_tipi + saat</td></tr>
+      <tr><td class="k">gercek_sure_hat_saat.csv</td><td class="n">11.906</td>
+          <td><b>Ölçülmüş</b> sefer süresi (arşivden)</td><td class="k">hat + saat</td></tr>
+      <tr><td class="k">gercek_sure_hat.csv</td><td class="n">810</td>
+          <td>Hattın geneli için ölçülmüş süre (yedek)</td><td class="k">hat</td></tr>
+      <tr><td class="k">gercek_sure_sistem_saat.csv</td><td class="n">24</td>
+          <td>O saatin sistem medyanı (son çare)</td><td class="k">saat</td></tr>
+      <tr><td class="k">guzergahlar.json</td><td class="n">676</td>
+          <td>Hattın <b>yön başına</b> sıralı durak listesi</td><td class="k">hat → G | D</td></tr>
+      <tr><td class="k">GetHat_json <span class="rz rz-a">API</span></td><td class="n">781</td>
+          <td>Hat künyesi: uzunluk, planlanan süre, tarife</td><td class="k">SHATKODU</td></tr>
+      <tr><td class="k">GetIettArsivGorev_json <span class="rz rz-a">API</span></td><td class="n">~56.400/gün</td>
+          <td><b>Gerçekleşen bir sefer</b> — araç, başlangıç/bitiş, yön</td><td class="k">SKAPINUMARA + SGUZERGAHKODU + zaman</td></tr>
+      <tr><td class="k">GetFiloAracKonum_json <span class="rz rz-a">API</span></td><td class="n">6.911</td>
+          <td>Bir aracın <b>anlık</b> konumu ve hızı</td><td class="k">KapiNo</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Talep tarafı</h3>
+  <div class="kaydir"><table>
+    <thead><tr><th>Dosya / kaynak</th><th>Satır</th><th>Bir satır =</th><th>Anahtar</th></tr></thead>
+    <tbody>
+      <tr><td class="k">hourly_transportation_202410.csv <span class="rz rz-t">ham</span></td><td class="n">2.770.720</td>
+          <td>Bir gün+saat+hat+<b>bilet türü</b> kombinasyonundaki yolcu sayısı</td>
+          <td class="k">date + hour + line_name + product_kind + transfer_type + town</td></tr>
+      <tr><td class="k">gercek_haftaici_profil.csv</td><td class="n">13.899</td>
+          <td>Hafta içi günlük ortalama yolcu (5 geçerli güne bölünmüş)</td><td class="k">hat + saat</td></tr>
+      <tr><td class="k">talep_final.csv</td><td class="n">41.697</td>
+          <td>Gerçek hafta içi + sentetik hafta sonu</td><td class="k">hat + gun_tipi + saat</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Sonuç dosyaları</h3>
+  <div class="kaydir"><table>
+    <thead><tr><th>Dosya</th><th>Satır</th><th>Bir satır =</th><th>Anahtar</th></tr></thead>
+    <tbody>
+      <tr><td class="k">doluluk.csv <span class="rz rz-s">ana sonuç</span></td><td class="n">28.391</td>
+          <td>Arz ve talebin birleşmiş hâli + doluluk</td><td class="k">hat + gun_tipi + saat</td></tr>
+      <tr><td class="k">oneri_sefer_artir.csv</td><td class="n">96</td>
+          <td>Kapasite üstü kalan hat-saat</td><td class="k">hat + gun_tipi + saat</td></tr>
+      <tr><td class="k">oneri_sefer_azalt.csv</td><td class="n">3.107</td>
+          <td>Boş kalan hat-saat</td><td class="k">hat + gun_tipi + saat</td></tr>
+      <tr><td class="k">veri_supheli_hatlar.csv</td><td class="n">30</td>
+          <td>Doluluğu şüpheli, öneri üretilmeyen hat</td><td class="k">hat</td></tr>
+      <tr><td class="k">arac_ihtiyaci_saatlik.csv</td><td class="n">14</td>
+          <td>Saatlik filo açığı</td><td class="k">saat</td></tr>
+    </tbody>
+  </table></div>
+
+  <p style="color:var(--ink-3); font-size:14px">
+  <span class="rz rz-a">arşiv</span> <code>veri/gtfs/</code> — 2. seansta bırakıldı
+  (Türkçe karakterler bozuk, <code>stop_times</code> dosyası kesik). API'ye geçildi.</p>
+</section>
+
+<section>
+  <h2>Kurulabilen birleştirmeler</h2>
+  <p class="alt">Sol taraf talep, sağ taraf ne kazandırıyor</p>
+
+<pre><b>gercek_haftaici_profil</b>  ──[ hat + saat ]──►        <b>arz_ozeti</b>        → sefer sayısı  ★ ANA
+                          ──[ hat + saat ]──►  <b>gercek_sure_hat_saat</b>  → ölçülmüş süre
+                          ──[ hat ]────────►         <b>GetHat_json</b>      → uzunluk, tarife
+                          ──[ hat ]────────►      <b>guzergahlar.json</b>    → durak koordinatları
+                          ──[ hat ]────────►      <b>gercek_sure_hat</b>     → yedek süre
+
+<b>sefer_ham</b>  ──[ SHATKODU ]──►  <b>GetHat_json</b>              → hat künyesi
+          ──[ SHATKODU + SGUZERGAHKODU ]──►  <b>arşiv görev</b>  → planlanan / gerçekleşen kıyası
+          ──[ SGUZERGAHKODU'nun yön harfi ]──►  <b>guzergahlar.json</b> → doğru yönün durakları
+
+<b>arşiv görev</b>  ──[ SKAPINUMARA ]──►  <b>canlı konum</b>  → aynı aracın bugünkü hâli
+</pre>
+
+  <h3>Eşleşme kalitesi — ölçüldü</h3>
+  <div class="kaydir"><table>
+    <thead><tr><th>Kontrol</th><th>Sonuç</th></tr></thead>
+    <tbody>
+      <tr><td>Talep tarafındaki hat</td><td class="n">798</td></tr>
+      <tr><td>Arz tarafındaki hat</td><td class="n">775</td></tr>
+      <tr><td><b>Eşleşen hat</b></td><td class="n"><b>724</b></td></tr>
+      <tr><td>Sadece talepte olan <span style="color:var(--ink-3)">(10B, 10G, 121CS, 131…)</span></td><td class="n">74</td></tr>
+      <tr><td>Sadece arzda olan <span style="color:var(--ink-3)">(1, 10F, 130ŞT, 132SP…)</span></td><td class="n">51</td></tr>
+      <tr><td><b>hat + saat üzerinden eşleşen satır</b></td><td class="n"><b>11.102 / 13.899 · %80</b></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Kurulamayan birleştirmeler</h2>
+  <p class="alt">Projenin kısıtları buradan doğuyor</p>
+
+  <div class="kaydir"><table>
+    <thead><tr><th>İstenen</th><th>Gereken ortak alan</th><th>Arz</th><th>Talep</th><th>Sonuç</th></tr></thead>
+    <tbody>
+      <tr><td><b>Yön bazlı doluluk</b></td><td class="k">yön (G/D)</td>
+          <td style="color:var(--ok)">var</td><td style="color:var(--stop)"><b>yok</b></td>
+          <td>Gidiş/dönüş ayrılamıyor</td></tr>
+      <tr><td><b>Durak bazlı analiz</b></td><td class="k">durak kodu</td>
+          <td style="color:var(--ok)">var</td><td style="color:var(--stop)"><b>yok</b><br><span style="font-size:12px">(%7,4 — sadece Metrobüs)</span></td>
+          <td>Nerede binildiği bilinmiyor</td></tr>
+      <tr><td><b>Sefer bazlı doluluk</b></td><td class="k">araç / kapı no</td>
+          <td style="color:var(--ok)">var</td><td style="color:var(--stop)"><b>yok</b></td>
+          <td>Hangi otobüse binildiği bilinmiyor</td></tr>
+      <tr><td><b>Dakika bazlı analiz</b></td><td class="k">dakika</td>
+          <td style="color:var(--ok)">var</td><td style="color:var(--stop)"><b>yok</b><br><span style="font-size:12px">(en ince birim: saat)</span></td>
+          <td>Saat içi dağılım bilinmiyor</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="kutu">
+    <span class="et">Dikkat — tek yönlü eksiklik</span>
+    <p>Dört satırın da <b>Arz sütunu dolu, Talep sütunu boş.</b> Yani eksiklik
+    yöntemden değil, <b>tek bir kaynağın yapısından</b> geliyor: İstanbulkart verisi
+    dışarıya kategori özeti olarak açılıyor ve toplulaştırma sırasında araç, durak,
+    yön ve dakika bilgisi düşüyor.</p>
+  </div>
+
+  <h3>Denenmiş ve çürütülmüş üç yol</h3>
+  <ul>
+    <li><b>Talep CSV'sindeki <code>line</code> sütunu gizlice yön taşıyor olabilir mi?</b>
+        Mart 2023 dosyasında test edildi — her hat için tek sabit değer çıktı
+        (34 → hep "AVCILAR-ZINCIRLIKUYU"). Hipotez öldü.</li>
+    <li><b>Kart basışını araca, araçtan yöne bağlamak?</b> Zincirin son üç halkası hazır
+        (araç → görev → güzergâh kodu → yön), ama ilki yok: talep tablosunda kapı no sütunu
+        bulunmuyor ve veri zaten basış seviyesinde değil.</li>
+    <li><b>Servisin başka bir metodu?</b> <code>GetKaraKutuSeferBilgileri_json</code>,
+        <code>GetUzulsuzKartKullanim_json</code>, <code>GetYolcuBilgilendirme_json</code>,
+        <code>IETTPlakaServisi_Json</code> — dördü de WSDL'de tanımlı ama geçit
+        <span class="mono">"Service Not Found"</span> döndürüyor.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Mentora tek cümleyle</h2>
+  <div class="kutu">
+    <p>“Arz ve talep yalnızca <b>hat + gün tipi + saat</b> üzerinden birleşiyor; bu üç alan
+    iki tarafta da var. Yön, durak, araç ve dakika arz tarafında var ama talep tarafında
+    hiç yok — o yüzden analizin çözünürlüğü bu üçlüde kalıyor. Yön bazına inebilmek için
+    tek eksik, kart basışlarının <b>kapı numarası</b> ile birlikte hâli.”</p>
+  </div>
+</section>
+
+</div>
