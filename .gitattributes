@@ -1,2 +1,5 @@
 # Defterler GitHub'a ÇIKTISIZ gider (çıktılar veri içerebilir); yerel dosyalar değişmez.
 *.ipynb filter=defter-temizle
+
+# notlar/ belge sayılsın: dashboard betikleri (JS/HTML) depo dilini "JavaScript" gösteriyordu
+notlar/** linguist-documentation
